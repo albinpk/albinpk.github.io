@@ -13,7 +13,9 @@ class SingleCharacter extends StatefulWidget {
 
 class _SingleCharacterState extends State<SingleCharacter> {
   late final _textSmall = Theme.of(context).textTheme.displaySmall!;
-  late final _textLarge = Theme.of(context).textTheme.displayMedium!;
+  late final _textLarge = Theme.of(context).textTheme.displayMedium!.copyWith(
+        fontWeight: FontWeight.bold,
+      );
 
   bool _isHover = false;
 
