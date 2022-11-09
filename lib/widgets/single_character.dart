@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class SingleCharacter extends StatefulWidget {
@@ -11,23 +13,27 @@ class SingleCharacter extends StatefulWidget {
 
 class _SingleCharacterState extends State<SingleCharacter> {
   late final _textSmall = Theme.of(context).textTheme.displaySmall!;
-  late final _textLarge = Theme.of(context).textTheme.displayMedium!.copyWith(
-        color: Colors.black,
-      );
+  late final _textLarge = Theme.of(context).textTheme.displayMedium!;
 
-  /// TextStyle that change on mouse hover.
-  late TextStyle _textStyle = _textSmall;
+  bool _isHover = false;
+
+  /// To generate random color on hover.
+  static final _random = Random();
 
   @override
   Widget build(BuildContext context) {
     return AnimatedDefaultTextStyle(
-      style: _textStyle,
+      style: _isHover
+          ? _textLarge.copyWith(
+              color: Colors.primaries[_random.nextInt(Colors.primaries.length)],
+            )
+          : _textSmall,
       curve: Curves.ease,
       duration: const Duration(milliseconds: 200),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _textStyle = _textLarge),
-        onExit: (_) => setState(() => _textStyle = _textSmall),
+        onEnter: (_) => setState(() => _isHover = true),
+        onExit: (_) => setState(() => _isHover = false),
         child: Text(widget.char),
       ),
     );
