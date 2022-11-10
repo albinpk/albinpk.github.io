@@ -8,6 +8,18 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // TODO: Remove this
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "This webpage is under development.",
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.redAccent,
+              ),
+        ),
+      ),
       body: Center(
         child: Row(
           mainAxisSize: MainAxisSize.min,
