@@ -58,10 +58,17 @@ class _ProjectViewState extends State<ProjectView> {
                 const SizedBox(height: 20),
 
                 // Features
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:
-                      widget.project.features.map(_featureToWidget).toList(),
+                Text(
+                  'Features',
+                  style: textTheme.headlineSmall,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:
+                        widget.project.features.map(_featureToWidget).toList(),
+                  ),
                 ),
 
                 // Repository url
