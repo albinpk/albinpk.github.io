@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../screens/project_screen.dart';
+
 class SingleCharacter extends StatefulWidget {
   const SingleCharacter(this.char, {super.key});
 
@@ -21,22 +23,74 @@ class _SingleCharacterState extends State<SingleCharacter> {
 
   /// To generate random color on hover.
   static final _random = Random();
+  static const _colors = [
+    Colors.red,
+    Colors.pink,
+    Colors.purple,
+    Colors.deepPurple,
+    Colors.indigo,
+    Colors.blue,
+    Colors.teal,
+    Colors.green,
+    Colors.lightGreen,
+    Colors.orange,
+    Colors.deepOrange,
+    Colors.brown,
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final color = _colors[_random.nextInt(_colors.length)];
+    // Using random value at the end of heroTag to disable
+    // Hero animation when navigating back to this screen.
+    final heroTag = '${widget.char}-${_random.nextDouble()}';
+
+    // To change textStyle on hover
     return AnimatedDefaultTextStyle(
-      style: _isHover
-          ? _textLarge.copyWith(
-              color: Colors.primaries[_random.nextInt(Colors.primaries.length)],
-            )
-          : _textSmall,
-      curve: Curves.ease,
+      style: _isHover ? _textLarge.copyWith(color: color) : _textSmall,
       duration: const Duration(milliseconds: 200),
+      curve: Curves.ease,
       child: MouseRegion(
-        cursor: SystemMouseCursors.click,
+        cursor: SystemMouseCursors.click, // Pointer
         onEnter: (_) => setState(() => _isHover = true),
         onExit: (_) => setState(() => _isHover = false),
-        child: Text(widget.char),
+        child: GestureDetector(
+          onTap: () => _onTap(color, heroTag),
+          child: Hero(
+            tag: heroTag,
+            child: Text(widget.char),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onTap(Color color, String tag) {
+    if (widget.char == ' ') return;
+    const duration = Duration(milliseconds: 1000);
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        transitionDuration: duration,
+        reverseTransitionDuration: duration,
+        pageBuilder: (context, animation, _) {
+          return ProjectScreen(
+            backgroundColor: color,
+            heroTag: tag,
+            animation: animation,
+          );
+        },
+        transitionsBuilder: (context, animation, _, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: const Offset(0, 0),
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.ease,
+            )),
+            child: child,
+          );
+        },
       ),
     );
   }
