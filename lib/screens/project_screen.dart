@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 final _random = Random();
 
-class ProjectScreen extends StatelessWidget {
+class ProjectScreen extends StatefulWidget {
   const ProjectScreen({
     super.key,
     required this.backgroundColor,
@@ -22,17 +22,55 @@ class ProjectScreen extends StatelessWidget {
   final Animation<double> animation;
 
   @override
+  State<ProjectScreen> createState() => _ProjectScreenState();
+}
+
+class _ProjectScreenState extends State<ProjectScreen>
+    with SingleTickerProviderStateMixin {
+  late final _backButtonAnimationController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 300),
+  );
+
+  late final _backButtonAnimation = Tween<Offset>(
+    begin: const Offset(0, -1),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: _backButtonAnimationController,
+    curve: Curves.ease,
+  ));
+
+  @override
+  void initState() {
+    super.initState();
+    widget.animation.addStatusListener(_animationStatusListener);
+  }
+
+  void _animationStatusListener(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      _backButtonAnimationController.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.animation.removeStatusListener(_animationStatusListener);
+    _backButtonAnimationController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final smallTextStyle = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: Colors.white,
         );
     final largeTextStyle = Theme.of(context).textTheme.displayMedium!.copyWith(
           fontWeight: FontWeight.bold,
-          color: backgroundColor,
+          color: widget.backgroundColor,
         );
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: widget.backgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -40,8 +78,11 @@ class ProjectScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
-              children: const [
-                BackButton(color: Colors.white),
+              children: [
+                SlideTransition(
+                  position: _backButtonAnimation,
+                  child: const BackButton(color: Colors.white),
+                ),
               ],
             ),
           ),
@@ -60,31 +101,33 @@ class ProjectScreen extends StatelessWidget {
                 children: [
                   const Text('Made by '),
                   Row(
-                    children: 'ALBIN PK'.characters.map((c) {
+                    children: 'ALBIN PK'.characters.map((char) {
                       return Hero(
-                        tag: heroTag[0] == c ? heroTag : _random.nextDouble(),
-                        child: heroTag[0] == c
+                        tag: widget.heroTag[0] == char
+                            ? widget.heroTag
+                            : _random.nextDouble(),
+                        child: widget.heroTag[0] == char
                             // Changing the font size and color of the
                             // hero text during the forward page transition.
                             ? AnimatedBuilder(
-                                animation: animation,
+                                animation: widget.animation,
                                 builder: (context, _) {
                                   return Text(
-                                    c,
-                                    style: animation.status ==
+                                    char,
+                                    style: widget.animation.status ==
                                             AnimationStatus.reverse
                                         ? null
                                         : TextStyleTween(
                                             begin: largeTextStyle,
                                             end: smallTextStyle,
                                           ).evaluate(CurvedAnimation(
-                                            parent: animation,
+                                            parent: widget.animation,
                                             curve: Curves.ease,
                                           )),
                                   );
                                 },
                               )
-                            : Text(c),
+                            : Text(char),
                       );
                     }).toList(),
                   ),
