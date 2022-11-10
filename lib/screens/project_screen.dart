@@ -57,9 +57,9 @@ class _ProjectScreenState extends State<ProjectScreen>
 
   @override
   void dispose() {
-    super.dispose();
     widget.animation.removeStatusListener(_animationStatusListener);
     _animationController.dispose();
+    super.dispose();
   }
 
   @override
