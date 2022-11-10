@@ -32,33 +32,36 @@ class _ProjectViewState extends State<ProjectView> {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // title
-                Text(
-                  widget.project.title,
-                  style: textTheme.headlineMedium!.copyWith(
-                    color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // title
+                  Text(
+                    widget.project.title,
+                    style: textTheme.headlineMedium!.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                // Description
-                Text(
-                  widget.project.description,
-                  style: textTheme.titleSmall,
-                ),
-                const SizedBox(height: 20),
+                  // Description
+                  Text(
+                    widget.project.description,
+                    style: textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 20),
 
-                // Repository url
-                Text(
-                  widget.project.repoUrl,
-                  style: textTheme.bodyMedium,
-                ),
-              ],
+                  // Repository url
+                  Text(
+                    widget.project.repoUrl,
+                    style: textTheme.bodyMedium,
+                  ),
+                ],
+              ),
             ),
           ),
 
