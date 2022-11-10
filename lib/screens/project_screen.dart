@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../data/projects.dart';
+import '../views/project_view.dart';
+
 final _random = Random();
 
 class ProjectScreen extends StatefulWidget {
@@ -88,7 +91,9 @@ class _ProjectScreenState extends State<ProjectScreen>
           ),
 
           // Project
-          const Spacer(),
+          Expanded(
+            child: ProjectView(project: projects.first),
+          ),
 
           // Made by ALBIN text
           DefaultTextStyle(
