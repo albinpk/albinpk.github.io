@@ -58,6 +58,13 @@ class _ProjectViewState extends State<ProjectView> {
                   ),
                   const SizedBox(height: 20),
 
+                  // Features
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:
+                        widget.project.features.map(_featureToWidget).toList(),
+                  ),
+
                   // Repository url
                   TextButton(
                     style: TextButton.styleFrom(
@@ -117,6 +124,61 @@ class _ProjectViewState extends State<ProjectView> {
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Convert a [Feature] to Widget.
+  ///
+  /// The [step] parameter is used to change the
+  /// bullet point in each feature sub section.
+  Widget _featureToWidget(Feature feat, [bool step = true]) {
+    final title = _bulletPoint(feat.title, step);
+    if (!feat.haveSubFeatures) return title;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        title,
+        Padding(
+          padding: const EdgeInsets.only(left: 18),
+          child: Column(
+            children:
+                feat.features.map((f) => _featureToWidget(f, !step)).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Add bullet point before text.
+  ///
+  /// The [step] parameter is used to change the
+  /// bullet point in each feature sub section.
+  Widget _bulletPoint(String title, bool step) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          // Bullet point
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: step ? Colors.white : null,
+              shape: BoxShape.circle,
+              border: step ? null : Border.all(color: Colors.white, width: 1.5),
+            ),
+          ),
+          const SizedBox(width: 10),
+
+          // Title
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Colors.white,
+                ),
           ),
         ],
       ),
