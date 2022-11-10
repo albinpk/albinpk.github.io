@@ -9,16 +9,53 @@ class ProjectView extends StatefulWidget {
   const ProjectView({
     super.key,
     required this.project,
+    required this.animation,
   });
 
   final Project project;
+  final Animation<double> animation;
 
   @override
   State<ProjectView> createState() => _ProjectViewState();
 }
 
 class _ProjectViewState extends State<ProjectView> {
+  /// Screenshots PaveView controller.
   final _pageController = PageController();
+
+  static const _detailsViewInterval =
+      Interval(0.2, 0.7, curve: Curves.easeOutCubic);
+  late final _detailsViewSlideAnimation = Tween<Offset>(
+    begin: const Offset(0, 1),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: widget.animation,
+    curve: _detailsViewInterval,
+  ));
+  late final _detailsViewFadeAnimation = Tween<double>(
+    begin: 0,
+    end: 1,
+  ).animate(CurvedAnimation(
+    parent: widget.animation,
+    curve: _detailsViewInterval,
+  ));
+
+  static const _screenshotsViewInterval =
+      Interval(0.3, 1, curve: Curves.easeOutCubic);
+  late final _screenshotsViewSlideAnimation = Tween<Offset>(
+    begin: const Offset(1, 0),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: widget.animation,
+    curve: _screenshotsViewInterval,
+  ));
+  late final _screenshotsViewFadeAnimation = Tween<double>(
+    begin: 0,
+    end: 1,
+  ).animate(CurvedAnimation(
+    parent: widget.animation,
+    curve: _screenshotsViewInterval,
+  ));
 
   @override
   void dispose() {
@@ -36,99 +73,116 @@ class _ProjectViewState extends State<ProjectView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // title
-                Text(
-                  widget.project.title,
-                  style: textTheme.headlineMedium!.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 20),
+          child: SlideTransition(
+            position: _detailsViewSlideAnimation,
+            child: FadeTransition(
+              opacity: _detailsViewFadeAnimation,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // title
+                    Text(
+                      widget.project.title,
+                      style: textTheme.headlineMedium!.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
 
-                // Description
-                Text(
-                  widget.project.description,
-                  style: textTheme.titleSmall,
-                ),
-                const SizedBox(height: 20),
+                    // Description
+                    Text(
+                      widget.project.description,
+                      style: textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 20),
 
-                // Features
-                Text(
-                  'Features',
-                  style: textTheme.headlineSmall,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:
-                        widget.project.features.map(_featureToWidget).toList(),
-                  ),
-                ),
+                    // Features
+                    Text(
+                      'Features',
+                      style: textTheme.headlineSmall,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: widget.project.features
+                            .map(_featureToWidget)
+                            .toList(),
+                      ),
+                    ),
 
-                // Repository url
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black87,
-                  ),
-                  onPressed: () async {
-                    if (!await launchUrlString(widget.project.repoUrl)) {
-                      log("Can't open repository url!");
-                    }
-                  },
-                  child: const Text('Repository'),
+                    // Repository url
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black87,
+                      ),
+                      onPressed: () async {
+                        if (!await launchUrlString(widget.project.repoUrl)) {
+                          log("Can't open repository url!");
+                        }
+                      },
+                      child: const Text('Repository'),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
 
         // Screenshots PageView
         Expanded(
-          child: Row(
-            children: [
-              // Previous button
-              IconButton(
-                onPressed: () {
-                  _pageController.previousPage(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.ease,
-                  );
-                },
-                color: Colors.white,
-                icon: const Icon(Icons.arrow_back_ios),
-              ),
+          child: SlideTransition(
+            position: _screenshotsViewSlideAnimation,
+            child: FadeTransition(
+              opacity: _screenshotsViewFadeAnimation,
+              child: Row(
+                children: [
+                  // Previous button
+                  IconButton(
+                    onPressed: () {
+                      _pageController.previousPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.ease,
+                      );
+                    },
+                    color: Colors.white,
+                    icon: const Icon(Icons.arrow_back_ios),
+                  ),
 
-              // Image
-              Expanded(
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemBuilder: (context, index) {
-                    return Image.asset(
-                      'assets/images/chat-room-dark.jpg',
-                    );
-                  },
-                ),
-              ),
+                  // Image
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemBuilder: (context, index) {
+                        return Image.asset(
+                          'assets/images/chat-room-dark.jpg',
+                        );
+                      },
+                    ),
+                  ),
 
-              // Next button
-              IconButton(
-                onPressed: () {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.ease,
-                  );
-                },
-                color: Colors.white,
-                icon: const Icon(Icons.arrow_forward_ios),
+                  // Next button
+                  IconButton(
+                    onPressed: () {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.ease,
+                      );
+                    },
+                    color: Colors.white,
+                    icon: const Icon(Icons.arrow_forward_ios),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ],

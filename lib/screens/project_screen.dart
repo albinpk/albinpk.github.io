@@ -30,17 +30,17 @@ class ProjectScreen extends StatefulWidget {
 
 class _ProjectScreenState extends State<ProjectScreen>
     with SingleTickerProviderStateMixin {
-  late final _backButtonAnimationController = AnimationController(
+  late final _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 300),
+    duration: const Duration(milliseconds: 1500),
   );
 
   late final _backButtonAnimation = Tween<Offset>(
     begin: const Offset(0, -1),
     end: Offset.zero,
   ).animate(CurvedAnimation(
-    parent: _backButtonAnimationController,
-    curve: Curves.ease,
+    parent: _animationController,
+    curve: const Interval(0, 0.4, curve: Curves.ease),
   ));
 
   @override
@@ -51,7 +51,7 @@ class _ProjectScreenState extends State<ProjectScreen>
 
   void _animationStatusListener(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      _backButtonAnimationController.forward();
+      _animationController.forward();
     }
   }
 
@@ -59,7 +59,7 @@ class _ProjectScreenState extends State<ProjectScreen>
   void dispose() {
     super.dispose();
     widget.animation.removeStatusListener(_animationStatusListener);
-    _backButtonAnimationController.dispose();
+    _animationController.dispose();
   }
 
   @override
@@ -92,7 +92,10 @@ class _ProjectScreenState extends State<ProjectScreen>
 
           // Project
           Expanded(
-            child: ProjectView(project: projects.first),
+            child: ProjectView(
+              project: projects.first,
+              animation: _animationController,
+            ),
           ),
 
           // Made by ALBIN text
