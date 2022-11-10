@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../core/slide_page_builder.dart';
 import '../screens/project_screen.dart';
 
 class SingleCharacter extends StatefulWidget {
@@ -67,28 +68,13 @@ class _SingleCharacterState extends State<SingleCharacter> {
 
   void _onTap(Color color, String tag) {
     if (widget.char == ' ') return;
-    const duration = Duration(milliseconds: 1000);
     Navigator.of(context).push(
-      PageRouteBuilder(
-        transitionDuration: duration,
-        reverseTransitionDuration: duration,
+      SlidePageBuilder(
         pageBuilder: (context, animation, _) {
           return ProjectScreen(
             backgroundColor: color,
             heroTag: tag,
             animation: animation,
-          );
-        },
-        transitionsBuilder: (context, animation, _, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: const Offset(0, 0),
-            ).animate(CurvedAnimation(
-              parent: animation,
-              curve: Curves.ease,
-            )),
-            child: child,
           );
         },
       ),
