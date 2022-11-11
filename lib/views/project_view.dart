@@ -160,10 +160,11 @@ class _ProjectViewState extends State<ProjectView> {
                   // Image
                   Expanded(
                     child: PageView.builder(
+                      itemCount: widget.project.screenshots.length,
                       controller: _pageController,
                       itemBuilder: (context, index) {
                         return Image.asset(
-                          'assets/images/chat-room-dark.jpg',
+                          widget.project.screenshots[index],
                         );
                       },
                     ),
