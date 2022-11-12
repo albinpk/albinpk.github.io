@@ -65,39 +65,68 @@ class _ProjectViewState extends State<ProjectView> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: SlideTransition(
-            position: _detailsViewSlideAnimation,
-            child: FadeTransition(
-              opacity: _detailsViewFadeAnimation,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _ProjectDescription(project: _project),
-                    const SizedBox(height: 20),
-                    _ProjectFeatures(project: _project),
-                  ],
+    if (MediaQuery.of(context).size.width > 700) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: SlideTransition(
+              position: _detailsViewSlideAnimation,
+              child: FadeTransition(
+                opacity: _detailsViewFadeAnimation,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ProjectDescription(project: _project),
+                      const SizedBox(height: 20),
+                      _ProjectFeatures(project: _project),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
 
-        // Screenshots PageView
-        Expanded(
-          child: _ProjectScreenshots(
-            screenshotsViewSlideAnimation: _screenshotsViewSlideAnimation,
-            screenshotsViewFadeAnimation: _screenshotsViewFadeAnimation,
-            pageController: _pageController,
-            project: _project,
+          // Screenshots PageView
+          Expanded(
+            child: _ProjectScreenshots(
+              screenshotsViewSlideAnimation: _screenshotsViewSlideAnimation,
+              screenshotsViewFadeAnimation: _screenshotsViewFadeAnimation,
+              pageController: _pageController,
+              project: _project,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return SlideTransition(
+      position: _detailsViewSlideAnimation,
+      child: FadeTransition(
+        opacity: _detailsViewFadeAnimation,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ProjectDescription(project: _project),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: _ProjectScreenshots(
+                  screenshotsViewSlideAnimation:
+                      const AlwaysStoppedAnimation(Offset.zero),
+                  screenshotsViewFadeAnimation: const AlwaysStoppedAnimation(1),
+                  pageController: _pageController,
+                  project: _project,
+                ),
+              ),
+              _ProjectFeatures(project: _project),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
