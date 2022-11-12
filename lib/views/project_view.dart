@@ -78,19 +78,10 @@ class _ProjectViewState extends State<ProjectView> {
             child: FadeTransition(
               opacity: _detailsViewFadeAnimation,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // title
-                    Text(
-                      _project.title,
-                      style: textTheme.headlineMedium!.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
                     // Description
                     Text(
                       _project.description,
@@ -128,67 +119,71 @@ class _ProjectViewState extends State<ProjectView> {
             position: _screenshotsViewSlideAnimation,
             child: FadeTransition(
               opacity: _screenshotsViewFadeAnimation,
-              child: Row(
-                children: [
-                  // Previous button
-                  IconButton(
-                    onPressed: () {
-                      _pageController.previousPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.ease,
-                      );
-                    },
-                    color: Colors.white,
-                    icon: const Icon(Icons.arrow_back_ios),
-                  ),
-
-                  // Image
-                  Expanded(
-                    child: PageView.builder(
-                      itemCount: _project.screenshots.length,
-                      controller: _pageController,
-                      itemBuilder: (context, index) {
-                        final url = _project.screenshots[index];
-                        return Image.network(
-                          url,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                // Shows a placeholder image while downloading large gif images.
-                                // A .png version of each gif image was added to the assets directory.
-                                if (url.endsWith('.gif'))
-                                  Image.network('$url.png'),
-
-                                CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                      : null,
-                                  color: Colors.grey,
-                                ),
-                              ],
-                            );
-                          },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Row(
+                  children: [
+                    // Previous button
+                    IconButton(
+                      onPressed: () {
+                        _pageController.previousPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.ease,
                         );
                       },
+                      color: Colors.white,
+                      icon: const Icon(Icons.arrow_back_ios),
                     ),
-                  ),
 
-                  // Next button
-                  IconButton(
-                    onPressed: () {
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.ease,
-                      );
-                    },
-                    color: Colors.white,
-                    icon: const Icon(Icons.arrow_forward_ios),
-                  ),
-                ],
+                    // Image
+                    Expanded(
+                      child: PageView.builder(
+                        itemCount: _project.screenshots.length,
+                        controller: _pageController,
+                        itemBuilder: (context, index) {
+                          final url = _project.screenshots[index];
+                          return Image.network(
+                            url,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Shows a placeholder image while downloading large gif images.
+                                  // A .png version of each gif image was added to the assets directory.
+                                  if (url.endsWith('.gif'))
+                                    Image.network('$url.png'),
+
+                                  CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+
+                    // Next button
+                    IconButton(
+                      onPressed: () {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.ease,
+                        );
+                      },
+                      color: Colors.white,
+                      icon: const Icon(Icons.arrow_forward_ios),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
