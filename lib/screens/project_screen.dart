@@ -98,55 +98,15 @@ class _ProjectScreenState extends State<ProjectScreen>
           fontWeight: FontWeight.bold,
           color: widget.backgroundColor,
         );
-    final buttonStyle = TextButton.styleFrom(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black87,
-    );
 
     return Scaffold(
       backgroundColor: widget.backgroundColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
+      appBar: _AppBar(
         backgroundColor: widget.backgroundColor,
-        elevation: 0,
-        leading: SlideTransition(
-          position: _backButtonAnimation,
-          child: const BackButton(),
-        ),
-        title: FadeTransition(
-          opacity: _fadeInAnimation,
-          child: Text(_project.title),
-        ),
-        actions: [
-          // Live demo and repository button
-          FadeTransition(
-            opacity: _fadeInAnimation,
-            child: SlideTransition(
-              position: _buttonAnimation,
-              child: Row(
-                children: [
-                  if (_project.liveDemoUrl != null)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                      child: ElevatedButton(
-                        style: buttonStyle,
-                        onPressed: () => _launchUrl(_project.liveDemoUrl!),
-                        child: const Text('Live Demo'),
-                      ),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                    child: TextButton(
-                      style: buttonStyle,
-                      onPressed: () => _launchUrl(_project.repoUrl),
-                      child: const Text('Repository'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
+        backButtonAnimation: _backButtonAnimation,
+        fadeInAnimation: _fadeInAnimation,
+        buttonAnimation: _buttonAnimation,
+        project: _project,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -208,9 +168,81 @@ class _ProjectScreenState extends State<ProjectScreen>
       ),
     );
   }
+}
+
+class _AppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _AppBar({
+    Key? key,
+    required this.backgroundColor,
+    required this.backButtonAnimation,
+    required this.fadeInAnimation,
+    required this.buttonAnimation,
+    required this.project,
+  }) : super(key: key);
+
+  final Color backgroundColor;
+  final Animation<Offset> backButtonAnimation;
+  final Animation<double> fadeInAnimation;
+  final Animation<Offset> buttonAnimation;
+  final Project project;
+
+  @override
+  Widget build(BuildContext context) {
+    final buttonStyle = TextButton.styleFrom(
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black87,
+    );
+
+    return AppBar(
+      automaticallyImplyLeading: false,
+      backgroundColor: backgroundColor,
+      elevation: 0,
+      leading: SlideTransition(
+        position: backButtonAnimation,
+        child: const BackButton(),
+      ),
+      title: FadeTransition(
+        opacity: fadeInAnimation,
+        child: Text(project.title),
+      ),
+      actions: [
+        // Live demo and repository button
+        FadeTransition(
+          opacity: fadeInAnimation,
+          child: SlideTransition(
+            position: buttonAnimation,
+            child: Row(
+              children: [
+                if (project.liveDemoUrl != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                    child: ElevatedButton(
+                      style: buttonStyle,
+                      onPressed: () => _launchUrl(project.liveDemoUrl!),
+                      child: const Text('Live Demo'),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                  child: TextButton(
+                    style: buttonStyle,
+                    onPressed: () => _launchUrl(project.repoUrl),
+                    child: const Text('Repository'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
 
   /// Launch given url.
   void _launchUrl(String url) async {
     if (!await launchUrlString(url)) log("Can't open url: $url!");
   }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
