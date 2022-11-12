@@ -182,7 +182,7 @@ class _ProjectViewState extends State<ProjectView> {
                                       ? loadingProgress.cumulativeBytesLoaded /
                                           loadingProgress.expectedTotalBytes!
                                       : null,
-                                  color: Colors.white54,
+                                  color: Colors.grey,
                                 ),
                               ],
                             );
