@@ -99,72 +99,80 @@ class _ProjectScreenState extends State<ProjectScreen>
           color: widget.backgroundColor,
         );
 
-    return Scaffold(
-      backgroundColor: widget.backgroundColor,
-      appBar: _AppBar(
-        backgroundColor: widget.backgroundColor,
-        backButtonAnimation: _backButtonAnimation,
-        fadeInAnimation: _fadeInAnimation,
-        buttonAnimation: _buttonAnimation,
-        project: _project,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Project
-          Expanded(
-            child: ProjectView(
-              projectIndex: widget.projectIndex,
-              animation: _animationController,
+    return ColoredBox(
+      color: widget.backgroundColor,
+      child: Center(
+        child: SizedBox(
+          width: 1600,
+          child: Scaffold(
+            backgroundColor: widget.backgroundColor,
+            appBar: _AppBar(
+              backgroundColor: widget.backgroundColor,
+              backButtonAnimation: _backButtonAnimation,
+              fadeInAnimation: _fadeInAnimation,
+              buttonAnimation: _buttonAnimation,
+              project: _project,
             ),
-          ),
-
-          // Made by ALBIN text
-          DefaultTextStyle(
-            style: smallTextStyle,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Made by '),
-                  Row(
-                    children: kMyName.characters.map((char) {
-                      return Hero(
-                        tag: kMyName[widget.projectIndex] == char
-                            ? widget.heroTag
-                            : _random.nextDouble(),
-                        child: kMyName[widget.projectIndex] == char
-                            // Changing the font size and color of the
-                            // hero text during the forward page transition.
-                            ? AnimatedBuilder(
-                                animation: widget.animation,
-                                builder: (context, _) {
-                                  return Text(
-                                    char,
-                                    style: widget.animation.status ==
-                                            AnimationStatus.reverse
-                                        ? null
-                                        : TextStyleTween(
-                                            begin: largeTextStyle,
-                                            end: smallTextStyle,
-                                          ).evaluate(CurvedAnimation(
-                                            parent: widget.animation,
-                                            curve: Curves.ease,
-                                          )),
-                                  );
-                                },
-                              )
-                            : Text(char),
-                      );
-                    }).toList(),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Project
+                Expanded(
+                  child: ProjectView(
+                    projectIndex: widget.projectIndex,
+                    animation: _animationController,
                   ),
-                ],
-              ),
+                ),
+
+                // Made by ALBIN text
+                DefaultTextStyle(
+                  style: smallTextStyle,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Made by '),
+                        Row(
+                          children: kMyName.characters.map((char) {
+                            return Hero(
+                              tag: kMyName[widget.projectIndex] == char
+                                  ? widget.heroTag
+                                  : _random.nextDouble(),
+                              child: kMyName[widget.projectIndex] == char
+                                  // Changing the font size and color of the
+                                  // hero text during the forward page transition.
+                                  ? AnimatedBuilder(
+                                      animation: widget.animation,
+                                      builder: (context, _) {
+                                        return Text(
+                                          char,
+                                          style: widget.animation.status ==
+                                                  AnimationStatus.reverse
+                                              ? null
+                                              : TextStyleTween(
+                                                  begin: largeTextStyle,
+                                                  end: smallTextStyle,
+                                                ).evaluate(CurvedAnimation(
+                                                  parent: widget.animation,
+                                                  curve: Curves.ease,
+                                                )),
+                                        );
+                                      },
+                                    )
+                                  : Text(char),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
