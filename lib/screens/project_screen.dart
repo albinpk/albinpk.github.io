@@ -43,7 +43,7 @@ class _ProjectScreenState extends State<ProjectScreen>
     duration: const Duration(milliseconds: 1500),
   );
 
-  /// Animation for AppBar content (backButton, title). First 40%.
+  /// Animation for AppBar content (backButton, title, action buttons). First 40%.
   late final _intervalAnimation = CurvedAnimation(
     parent: _animationController,
     curve: const Interval(0, 0.4, curve: Curves.ease),
@@ -55,10 +55,16 @@ class _ProjectScreenState extends State<ProjectScreen>
     end: Offset.zero,
   ).animate(_intervalAnimation);
 
-  /// Fade in
-  late final _titleAnimation = Tween<double>(
+  /// Fade in.
+  late final _fadeInAnimation = Tween<double>(
     begin: 0,
     end: 1,
+  ).animate(_intervalAnimation);
+
+  /// Slide from right to left.
+  late final _buttonAnimation = Tween<Offset>(
+    begin: const Offset(1, 0),
+    end: Offset.zero,
   ).animate(_intervalAnimation);
 
   @override
@@ -108,27 +114,38 @@ class _ProjectScreenState extends State<ProjectScreen>
           child: const BackButton(),
         ),
         title: FadeTransition(
-          opacity: _titleAnimation,
+          opacity: _fadeInAnimation,
           child: Text(_project.title),
         ),
         actions: [
-          if (_project.liveDemoUrl != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-              child: ElevatedButton(
-                style: buttonStyle,
-                onPressed: () => _launchUrl(_project.liveDemoUrl!),
-                child: const Text('Live Demo'),
+          // Live demo and repository button
+          FadeTransition(
+            opacity: _fadeInAnimation,
+            child: SlideTransition(
+              position: _buttonAnimation,
+              child: Row(
+                children: [
+                  if (_project.liveDemoUrl != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                      child: ElevatedButton(
+                        style: buttonStyle,
+                        onPressed: () => _launchUrl(_project.liveDemoUrl!),
+                        child: const Text('Live Demo'),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                    child: TextButton(
+                      style: buttonStyle,
+                      onPressed: () => _launchUrl(_project.repoUrl),
+                      child: const Text('Repository'),
+                    ),
+                  ),
+                ],
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-            child: TextButton(
-              style: buttonStyle,
-              onPressed: () => _launchUrl(_project.repoUrl),
-              child: const Text('Repository'),
-            ),
-          ),
+          )
         ],
       ),
       body: Column(
