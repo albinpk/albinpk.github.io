@@ -1,7 +1,9 @@
 import '../models/project_model.dart';
 
-const _assetsImageMobile = 'assets/images/mobile';
-const _assetsImageDesktop = 'assets/images/desktop';
+const _whatsAppImageMobile =
+    'https://albinpk.github.io/assets/assets/images/mobile';
+const _whatsAppImageDesktop =
+    'https://albinpk.github.io/assets/assets/images/desktop';
 
 const List<Project> projects = [
   Project(
@@ -30,27 +32,27 @@ const List<Project> projects = [
       ]),
     ],
     screenshots: [
-      '$_assetsImageMobile/chat-room.gif',
-      '$_assetsImageMobile/home.gif',
-      '$_assetsImageMobile/settings.gif',
-      '$_assetsImageMobile/status.gif',
-      '$_assetsImageMobile/user-profile.gif',
-      '$_assetsImageDesktop/home-dark.png',
-      '$_assetsImageDesktop/home-light.png',
-      '$_assetsImageDesktop/chat-room-dark.png',
-      '$_assetsImageDesktop/chat-room-light.png',
-      '$_assetsImageDesktop/new-chat-dark.png',
-      '$_assetsImageDesktop/new-chat-light.png',
-      '$_assetsImageDesktop/profile-settings-dark.png',
-      '$_assetsImageDesktop/responsive-large.png',
-      '$_assetsImageDesktop/responsive-small.png',
-      '$_assetsImageDesktop/settings-dark.png',
-      '$_assetsImageDesktop/status-list-dark.png',
-      '$_assetsImageDesktop/status-screen-1.png',
-      '$_assetsImageDesktop/status-screen-2.png',
-      '$_assetsImageDesktop/theme-settings-light.png',
-      '$_assetsImageDesktop/user-profile-dark.png',
-      '$_assetsImageDesktop/user-profile-light.png',
+      '$_whatsAppImageMobile/chat-room.gif',
+      '$_whatsAppImageMobile/home.gif',
+      '$_whatsAppImageMobile/settings.gif',
+      '$_whatsAppImageMobile/status.gif',
+      '$_whatsAppImageMobile/user-profile.gif',
+      '$_whatsAppImageDesktop/home-dark.png',
+      '$_whatsAppImageDesktop/home-light.png',
+      '$_whatsAppImageDesktop/chat-room-dark.png',
+      '$_whatsAppImageDesktop/chat-room-light.png',
+      '$_whatsAppImageDesktop/new-chat-dark.png',
+      '$_whatsAppImageDesktop/new-chat-light.png',
+      '$_whatsAppImageDesktop/profile-settings-dark.png',
+      '$_whatsAppImageDesktop/responsive-large.png',
+      '$_whatsAppImageDesktop/responsive-small.png',
+      '$_whatsAppImageDesktop/settings-dark.png',
+      '$_whatsAppImageDesktop/status-list-dark.png',
+      '$_whatsAppImageDesktop/status-screen-1.png',
+      '$_whatsAppImageDesktop/status-screen-2.png',
+      '$_whatsAppImageDesktop/theme-settings-light.png',
+      '$_whatsAppImageDesktop/user-profile-dark.png',
+      '$_whatsAppImageDesktop/user-profile-light.png',
     ],
     repoUrl:
         'https://github.com/albinpk/flutter-clones/tree/master/000-whatsapp#readme',

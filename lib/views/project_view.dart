@@ -163,8 +163,30 @@ class _ProjectViewState extends State<ProjectView> {
                       itemCount: widget.project.screenshots.length,
                       controller: _pageController,
                       itemBuilder: (context, index) {
-                        return Image.asset(
-                          widget.project.screenshots[index],
+                        final url = widget.project.screenshots[index];
+                        return Image.network(
+                          url,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                // Shows a placeholder image while downloading large gif images.
+                                // A .png version of each gif image was added to the assets directory.
+                                if (url.endsWith('.gif'))
+                                  Image.network('$url.png'),
+
+                                CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                  color: Colors.white54,
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
                     ),
