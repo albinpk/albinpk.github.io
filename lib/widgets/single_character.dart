@@ -2,13 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
 import '../core/slide_page_builder.dart';
 import '../screens/project_screen.dart';
 
 class SingleCharacter extends StatefulWidget {
-  const SingleCharacter(this.char, {super.key});
+  const SingleCharacter(this.index, {super.key});
 
-  final String char;
+  final int index;
 
   @override
   State<SingleCharacter> createState() => _SingleCharacterState();
@@ -39,12 +40,14 @@ class _SingleCharacterState extends State<SingleCharacter> {
     Colors.brown,
   ];
 
+  late final String _char = kMyName[widget.index];
+
   @override
   Widget build(BuildContext context) {
     final color = _colors[_random.nextInt(_colors.length)];
     // Using random value at the end of heroTag to disable
     // Hero animation when navigating back to this screen.
-    final heroTag = '${widget.char}-${_random.nextDouble()}';
+    final heroTag = '${_random.nextDouble()}';
 
     // To change textStyle on hover
     return AnimatedDefaultTextStyle(
@@ -59,7 +62,7 @@ class _SingleCharacterState extends State<SingleCharacter> {
           onTap: () => _onTap(color, heroTag),
           child: Hero(
             tag: heroTag,
-            child: Text(widget.char),
+            child: Text(_char),
           ),
         ),
       ),
@@ -67,7 +70,7 @@ class _SingleCharacterState extends State<SingleCharacter> {
   }
 
   void _onTap(Color color, String tag) {
-    if (widget.char == ' ') return;
+    if (_char == ' ') return;
     Navigator.of(context).push(
       SlidePageBuilder(
         pageBuilder: (context, animation, _) {

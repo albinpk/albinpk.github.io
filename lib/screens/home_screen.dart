@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
+import '../data/projects.dart';
 import '../widgets/single_character.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -23,8 +25,17 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children:
-              'ALBIN PK'.characters.map((e) => SingleCharacter(e)).toList(),
+          children: [
+            for (int i = 0; i < kMyName.length; i++)
+              i < projects.length
+                  ? SingleCharacter(i)
+                  : Text(
+                      kMyName[i],
+                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                            color: Colors.grey,
+                          ),
+                    ),
+          ],
         ),
       ),
     );
