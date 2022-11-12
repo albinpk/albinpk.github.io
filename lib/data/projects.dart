@@ -56,6 +56,7 @@ const List<Project> projects = [
     ],
     repoUrl:
         'https://github.com/albinpk/flutter-clones/tree/master/000-whatsapp#readme',
+    liveDemoUrl: 'https://albinpk.github.io/flutter-clones',
   ),
   Project(
     title: 'BookMyShow Tracker',

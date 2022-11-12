@@ -92,6 +92,10 @@ class _ProjectScreenState extends State<ProjectScreen>
           fontWeight: FontWeight.bold,
           color: widget.backgroundColor,
         );
+    final buttonStyle = TextButton.styleFrom(
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black87,
+    );
 
     return Scaffold(
       backgroundColor: widget.backgroundColor,
@@ -108,18 +112,20 @@ class _ProjectScreenState extends State<ProjectScreen>
           child: Text(_project.title),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(10).copyWith(left: 5),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black87,
+          if (_project.liveDemoUrl != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+              child: ElevatedButton(
+                style: buttonStyle,
+                onPressed: () => _launchUrl(_project.liveDemoUrl!),
+                child: const Text('Live Demo'),
               ),
-              onPressed: () async {
-                if (!await launchUrlString(_project.repoUrl)) {
-                  log("Can't open repository url!");
-                }
-              },
+            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+            child: TextButton(
+              style: buttonStyle,
+              onPressed: () => _launchUrl(_project.repoUrl),
               child: const Text('Repository'),
             ),
           ),
@@ -184,5 +190,10 @@ class _ProjectScreenState extends State<ProjectScreen>
         ],
       ),
     );
+  }
+
+  /// Launch given url.
+  void _launchUrl(String url) async {
+    if (!await launchUrlString(url)) log("Can't open url: $url!");
   }
 }
