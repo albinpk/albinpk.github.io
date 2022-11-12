@@ -112,7 +112,7 @@ class _ProjectScreenState extends State<ProjectScreen>
           // Project
           Expanded(
             child: ProjectView(
-              project: projects.first,
+              projectIndex: widget.projectIndex,
               animation: _animationController,
             ),
           ),

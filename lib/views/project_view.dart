@@ -3,16 +3,17 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../data/projects.dart';
 import '../models/project_model.dart';
 
 class ProjectView extends StatefulWidget {
   const ProjectView({
     super.key,
-    required this.project,
+    required this.projectIndex,
     required this.animation,
   });
 
-  final Project project;
+  final int projectIndex;
   final Animation<double> animation;
 
   @override
@@ -63,6 +64,8 @@ class _ProjectViewState extends State<ProjectView> {
     super.dispose();
   }
 
+  late final Project _project = projects[widget.projectIndex];
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme.apply(
@@ -84,7 +87,7 @@ class _ProjectViewState extends State<ProjectView> {
                   children: [
                     // title
                     Text(
-                      widget.project.title,
+                      _project.title,
                       style: textTheme.headlineMedium!.copyWith(
                         color: Colors.white,
                       ),
@@ -93,7 +96,7 @@ class _ProjectViewState extends State<ProjectView> {
 
                     // Description
                     Text(
-                      widget.project.description,
+                      _project.description,
                       style: textTheme.titleSmall,
                     ),
                     const SizedBox(height: 20),
@@ -111,9 +114,8 @@ class _ProjectViewState extends State<ProjectView> {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: widget.project.features
-                            .map(_featureToWidget)
-                            .toList(),
+                        children:
+                            _project.features.map(_featureToWidget).toList(),
                       ),
                     ),
 
@@ -124,7 +126,7 @@ class _ProjectViewState extends State<ProjectView> {
                         foregroundColor: Colors.black87,
                       ),
                       onPressed: () async {
-                        if (!await launchUrlString(widget.project.repoUrl)) {
+                        if (!await launchUrlString(_project.repoUrl)) {
                           log("Can't open repository url!");
                         }
                       },
@@ -160,10 +162,10 @@ class _ProjectViewState extends State<ProjectView> {
                   // Image
                   Expanded(
                     child: PageView.builder(
-                      itemCount: widget.project.screenshots.length,
+                      itemCount: _project.screenshots.length,
                       controller: _pageController,
                       itemBuilder: (context, index) {
-                        final url = widget.project.screenshots[index];
+                        final url = _project.screenshots[index];
                         return Image.network(
                           url,
                           loadingBuilder: (context, child, loadingProgress) {
