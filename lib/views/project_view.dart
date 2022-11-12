@@ -257,10 +257,11 @@ class _ProjectFeatures extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Features',
-          style: textTheme.headlineSmall!.copyWith(color: Colors.white),
-        ),
+        if (project.features.isNotEmpty)
+          Text(
+            'Features',
+            style: textTheme.headlineSmall!.copyWith(color: Colors.white),
+          ),
         Padding(
           padding: const EdgeInsets.only(
             left: 20,
