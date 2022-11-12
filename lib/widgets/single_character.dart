@@ -47,7 +47,7 @@ class _SingleCharacterState extends State<SingleCharacter> {
     final color = _colors[_random.nextInt(_colors.length)];
     // Using random value at the end of heroTag to disable
     // Hero animation when navigating back to this screen.
-    final heroTag = '${_random.nextDouble()}';
+    final heroTag = _random.nextDouble();
 
     // To change textStyle on hover
     return AnimatedDefaultTextStyle(
@@ -69,12 +69,13 @@ class _SingleCharacterState extends State<SingleCharacter> {
     );
   }
 
-  void _onTap(Color color, String tag) {
+  void _onTap(Color color, Object tag) {
     if (_char == ' ') return;
     Navigator.of(context).push(
       SlidePageBuilder(
         pageBuilder: (context, animation, _) {
           return ProjectScreen(
+            projectIndex: widget.index,
             backgroundColor: color,
             heroTag: tag,
             animation: animation,
