@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../data/projects.dart';
 import '../models/project_model.dart';
@@ -117,20 +114,6 @@ class _ProjectViewState extends State<ProjectView> {
                         children:
                             _project.features.map(_featureToWidget).toList(),
                       ),
-                    ),
-
-                    // Repository url
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black87,
-                      ),
-                      onPressed: () async {
-                        if (!await launchUrlString(_project.repoUrl)) {
-                          log("Can't open repository url!");
-                        }
-                      },
-                      child: const Text('Repository'),
                     ),
                   ],
                 ),

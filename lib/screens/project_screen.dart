@@ -1,6 +1,8 @@
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' hide log;
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
 import '../data/projects.dart';
@@ -105,6 +107,23 @@ class _ProjectScreenState extends State<ProjectScreen>
           opacity: _titleAnimation,
           child: Text(_project.title),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(10).copyWith(left: 5),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black87,
+              ),
+              onPressed: () async {
+                if (!await launchUrlString(_project.repoUrl)) {
+                  log("Can't open repository url!");
+                }
+              },
+              child: const Text('Repository'),
+            ),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
