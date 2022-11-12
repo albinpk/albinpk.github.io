@@ -65,10 +65,6 @@ class _ProjectViewState extends State<ProjectView> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme.apply(
-          bodyColor: Colors.white,
-        );
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,30 +78,9 @@ class _ProjectViewState extends State<ProjectView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Description
-                    Text(
-                      _project.description,
-                      style: textTheme.titleSmall,
-                    ),
+                    _ProjectDescription(project: _project),
                     const SizedBox(height: 20),
-
-                    // Features
-                    Text(
-                      'Features',
-                      style: textTheme.headlineSmall,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        top: 10,
-                        bottom: 10,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            _project.features.map(_featureToWidget).toList(),
-                      ),
-                    ),
+                    _ProjectFeatures(project: _project),
                   ],
                 ),
               ),
@@ -115,76 +90,159 @@ class _ProjectViewState extends State<ProjectView> {
 
         // Screenshots PageView
         Expanded(
-          child: SlideTransition(
-            position: _screenshotsViewSlideAnimation,
-            child: FadeTransition(
-              opacity: _screenshotsViewFadeAnimation,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  children: [
-                    // Previous button
-                    IconButton(
-                      onPressed: () {
-                        _pageController.previousPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.ease,
+          child: _ProjectScreenshots(
+            screenshotsViewSlideAnimation: _screenshotsViewSlideAnimation,
+            screenshotsViewFadeAnimation: _screenshotsViewFadeAnimation,
+            pageController: _pageController,
+            project: _project,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProjectDescription extends StatelessWidget {
+  const _ProjectDescription({
+    Key? key,
+    required this.project,
+  }) : super(key: key);
+
+  final Project project;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      project.description,
+      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+            color: Colors.white,
+          ),
+    );
+  }
+}
+
+class _ProjectScreenshots extends StatelessWidget {
+  const _ProjectScreenshots({
+    Key? key,
+    required Animation<Offset> screenshotsViewSlideAnimation,
+    required Animation<double> screenshotsViewFadeAnimation,
+    required PageController pageController,
+    required Project project,
+  })  : _screenshotsViewSlideAnimation = screenshotsViewSlideAnimation,
+        _screenshotsViewFadeAnimation = screenshotsViewFadeAnimation,
+        _pageController = pageController,
+        _project = project,
+        super(key: key);
+
+  final Animation<Offset> _screenshotsViewSlideAnimation;
+  final Animation<double> _screenshotsViewFadeAnimation;
+  final PageController _pageController;
+  final Project _project;
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: _screenshotsViewSlideAnimation,
+      child: FadeTransition(
+        opacity: _screenshotsViewFadeAnimation,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Row(
+            children: [
+              // Previous button
+              IconButton(
+                onPressed: () {
+                  _pageController.previousPage(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                },
+                color: Colors.white,
+                icon: const Icon(Icons.arrow_back_ios),
+              ),
+
+              // Image
+              Expanded(
+                child: PageView.builder(
+                  itemCount: _project.screenshots.length,
+                  controller: _pageController,
+                  itemBuilder: (context, index) {
+                    final url = _project.screenshots[index];
+                    return Image.network(
+                      url,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Shows a placeholder image while downloading large gif images.
+                            // A .png version of each gif image was added to the assets directory.
+                            if (url.endsWith('.gif')) Image.network('$url.png'),
+
+                            CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                              color: Colors.grey,
+                            ),
+                          ],
                         );
                       },
-                      color: Colors.white,
-                      icon: const Icon(Icons.arrow_back_ios),
-                    ),
-
-                    // Image
-                    Expanded(
-                      child: PageView.builder(
-                        itemCount: _project.screenshots.length,
-                        controller: _pageController,
-                        itemBuilder: (context, index) {
-                          final url = _project.screenshots[index];
-                          return Image.network(
-                            url,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Shows a placeholder image while downloading large gif images.
-                                  // A .png version of each gif image was added to the assets directory.
-                                  if (url.endsWith('.gif'))
-                                    Image.network('$url.png'),
-
-                                  CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                    color: Colors.grey,
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-
-                    // Next button
-                    IconButton(
-                      onPressed: () {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.ease,
-                        );
-                      },
-                      color: Colors.white,
-                      icon: const Icon(Icons.arrow_forward_ios),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
+
+              // Next button
+              IconButton(
+                onPressed: () {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                },
+                color: Colors.white,
+                icon: const Icon(Icons.arrow_forward_ios),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProjectFeatures extends StatelessWidget {
+  const _ProjectFeatures({
+    Key? key,
+    required this.project,
+  }) : super(key: key);
+
+  final Project project;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Features',
+          style: textTheme.headlineSmall!.copyWith(color: Colors.white),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 20,
+            top: 10,
+            bottom: 10,
+          ),
+          child: DefaultTextStyle(
+            style: textTheme.titleMedium!.copyWith(color: Colors.white),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: project.features.map(_featureToWidget).toList(),
             ),
           ),
         ),
@@ -237,15 +295,8 @@ class _ProjectViewState extends State<ProjectView> {
           ),
           const SizedBox(width: 10),
 
-          // Title
-          Flexible(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.white,
-                  ),
-            ),
-          ),
+          // Feature Title
+          Flexible(child: Text(title)),
         ],
       ),
     );
