@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../core/slide_page_builder.dart';
+import '../data/projects.dart';
 import '../screens/project_screen.dart';
 
 class SingleCharacter extends StatefulWidget {
@@ -42,24 +43,33 @@ class _SingleCharacterState extends State<SingleCharacter> {
 
   late final String _char = kMyName[widget.index];
 
+  /// Current color of the character.
+  late Color _color;
+
   @override
   Widget build(BuildContext context) {
-    final color = _colors[_random.nextInt(_colors.length)];
-    // Using random value at the end of heroTag to disable
-    // Hero animation when navigating back to this screen.
     final heroTag = _random.nextDouble();
 
     // To change textStyle on hover
     return AnimatedDefaultTextStyle(
-      style: _isHover ? _textLarge.copyWith(color: color) : _textSmall,
+      style: _isHover ? _textLarge.copyWith(color: _color) : _textSmall,
       duration: const Duration(milliseconds: 200),
       curve: Curves.ease,
       child: MouseRegion(
         cursor: SystemMouseCursors.click, // Pointer
-        onEnter: (_) => setState(() => _isHover = true),
-        onExit: (_) => setState(() => _isHover = false),
+        onEnter: (_) {
+          setState(() {
+            _isHover = true;
+            _color = _colors[_random.nextInt(_colors.length)];
+          });
+          _showOverlay();
+        },
+        onExit: (_) {
+          _currentOverlay.remove();
+          setState(() => _isHover = false);
+        },
         child: GestureDetector(
-          onTap: () => _onTap(color, heroTag),
+          onTap: () => _onTap(heroTag),
           child: Hero(
             tag: heroTag,
             child: Text(_char),
@@ -69,18 +79,71 @@ class _SingleCharacterState extends State<SingleCharacter> {
     );
   }
 
-  void _onTap(Color color, Object tag) {
+  void _onTap(Object tag) {
     if (_char == ' ') return;
     Navigator.of(context).push(
       SlidePageBuilder(
         pageBuilder: (context, animation, _) {
           return ProjectScreen(
             projectIndex: widget.index,
-            backgroundColor: color,
+            backgroundColor: _color,
             heroTag: tag,
             animation: animation,
           );
         },
+      ),
+    );
+  }
+
+  late final _overlayState = Overlay.of(context)!;
+  late OverlayEntry _currentOverlay;
+
+  /// Show overlay above the character.
+  void _showOverlay() {
+    // Find global position of the character
+    final box = context.findRenderObject() as RenderBox;
+    final position = box.localToGlobal(Offset.zero);
+
+    _currentOverlay = OverlayEntry(
+      // Place overlay above the character
+      builder: (context) => Positioned(
+        left: position.dx,
+        bottom: position.dy + 10,
+        child: _OverlayCard(
+          projectIndex: widget.index,
+          backgroundColor: _color,
+        ),
+      ),
+    );
+    _overlayState.insert(_currentOverlay);
+  }
+}
+
+/// The widget appears as an overlay above the character.
+class _OverlayCard extends StatelessWidget {
+  const _OverlayCard({
+    Key? key,
+    required this.projectIndex,
+    required this.backgroundColor,
+  }) : super(key: key);
+
+  final int projectIndex;
+
+  /// Background color of the overlay card.
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          projects[projectIndex].title,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: Colors.white,
+              ),
+        ),
       ),
     );
   }
