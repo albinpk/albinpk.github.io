@@ -6,6 +6,7 @@ const _whatsAppImageDesktop =
     'https://albinpk.github.io/assets/assets/images/whatsapp/desktop';
 const _bookMyShowImages =
     'https://albinpk.github.io/assets/assets/images/bookmyshow';
+const _todoImages = 'https://albinpk.github.io/assets/assets/images/todo';
 
 const List<Project> projects = [
 // WhatsApp
@@ -103,7 +104,16 @@ const List<Project> projects = [
       Feature('Responsive UI'),
     ],
     platforms: {Platforms.mobile, Platforms.desktop, Platforms.web},
-    screenshots: [],
+    screenshots: [
+      '$_todoImages/android/todo-home-page.gif',
+      '$_todoImages/android/todo-home-page.png',
+      '$_todoImages/android/todo-form.png',
+      '$_todoImages/android/todo-dark-mode.png',
+      '$_todoImages/android/todo-swipe.png',
+      '$_todoImages/linux/todo-home.png',
+      '$_todoImages/linux/todo-home-resize.png',
+      '$_todoImages/web/todo-home.png',
+    ],
     repoUrl:
         'https://github.com/albinpk/flutter-apps/tree/master/000-todo#readme',
   ),
