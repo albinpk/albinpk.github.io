@@ -89,4 +89,22 @@ const List<Project> projects = [
     repoUrl:
         'https://github.com/albinpk/flutter-apps/tree/master/001-bookmyshow_tracker#readme',
   ),
+
+  // Todo
+  Project(
+    title: 'Todo',
+    description: 'A simple todo app in flutter.',
+    features: [
+      Feature('Create todo with description'),
+      Feature('Mark completed todo'),
+      Feature('Update todo'),
+      Feature('Delete todo'),
+      Feature('Dark theme support'),
+      Feature('Responsive UI'),
+    ],
+    platforms: {Platforms.mobile, Platforms.desktop, Platforms.web},
+    screenshots: [],
+    repoUrl:
+        'https://github.com/albinpk/flutter-apps/tree/master/000-todo#readme',
+  ),
 ];
