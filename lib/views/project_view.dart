@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../data/projects.dart';
 import '../models/project_model.dart';
@@ -114,6 +117,40 @@ class _ProjectViewState extends State<ProjectView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _ProjectDescription(project: _project),
+              const SizedBox(height: 20),
+
+              // Repository, live demo links
+              TextButtonTheme(
+                data: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black87,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        if (!await launchUrlString(_project.repoUrl)) {
+                          log("Can't open url: ${_project.repoUrl}");
+                        }
+                      },
+                      child: const Text("Repository"),
+                    ),
+                    if (_project.liveDemoUrl != null) ...[
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () async {
+                          if (!await launchUrlString(_project.liveDemoUrl!)) {
+                            log("Can't open url: ${_project.liveDemoUrl}");
+                          }
+                        },
+                        child: const Text("Live Demo"),
+                      ),
+                    ]
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
 
               // Platforms

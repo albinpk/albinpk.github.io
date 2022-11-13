@@ -197,11 +197,6 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = TextButton.styleFrom(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black87,
-    );
-
     final isLargeScreen = MediaQuery.of(context).size.width > 700;
 
     return AppBar(
@@ -231,37 +226,45 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ),
-      actions: [
-        // Live demo and repository button
+      actions: !isLargeScreen
+          ? null
+          : [
+              // Live demo and repository button
 
-        FadeTransition(
-          opacity: fadeInAnimation,
-          child: SlideTransition(
-            position: buttonAnimation,
-            child: Row(
-              children: [
-                if (project.liveDemoUrl != null)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                    child: ElevatedButton(
-                      style: buttonStyle,
-                      onPressed: () => _launchUrl(project.liveDemoUrl!),
-                      child: const Text('Live Demo'),
+              FadeTransition(
+                opacity: fadeInAnimation,
+                child: SlideTransition(
+                  position: buttonAnimation,
+                  child: TextButtonTheme(
+                    data: TextButtonThemeData(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black87,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        if (project.liveDemoUrl != null)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                            child: TextButton(
+                              onPressed: () => _launchUrl(project.liveDemoUrl!),
+                              child: const Text('Live Demo'),
+                            ),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                          child: TextButton(
+                            onPressed: () => _launchUrl(project.repoUrl),
+                            child: const Text('Repository'),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                  child: TextButton(
-                    style: buttonStyle,
-                    onPressed: () => _launchUrl(project.repoUrl),
-                    child: const Text('Repository'),
-                  ),
                 ),
-              ],
-            ),
-          ),
-        )
-      ],
+              )
+            ],
     );
   }
 
