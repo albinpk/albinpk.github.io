@@ -1,12 +1,13 @@
 /// Project class.
 ///
-/// Contains project [title], [description], [features],
+/// Contains project [title], [description], [features], [platforms],
 /// [screenshots], [repoUrl] and optional [liveDemoUrl].
 class Project {
   const Project({
     required this.title,
     required this.description,
     required this.features,
+    required this.platforms,
     required this.screenshots,
     required this.repoUrl,
     this.liveDemoUrl,
@@ -20,6 +21,9 @@ class Project {
 
   /// List of project features.
   final List<Feature> features;
+
+  /// Supported platforms.
+  final Set<Platforms> platforms;
 
   /// List of project screenshots.
   final List<String> screenshots;
@@ -47,4 +51,15 @@ class Feature {
 
   /// Whether this feature have sub features or not.
   bool get haveSubFeatures => features.isNotEmpty;
+}
+
+/// Enum of Platforms.
+enum Platforms {
+  mobile('Mobile'),
+  desktop('Desktop'),
+  web('Web');
+
+  const Platforms(this.name);
+
+  final String name;
 }

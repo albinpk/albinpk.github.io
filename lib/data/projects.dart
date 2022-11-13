@@ -31,6 +31,7 @@ const List<Project> projects = [
         Feature('Theme settings (with light and dark mode)'),
       ]),
     ],
+    platforms: {Platforms.mobile, Platforms.desktop, Platforms.web},
     screenshots: [
       '$_whatsAppImageMobile/chat-room.gif',
       '$_whatsAppImageMobile/home.gif',
@@ -63,6 +64,7 @@ const List<Project> projects = [
     description: 'When ticket sales for a particular movie or movies '
         'on bookmyshow.com begin, BookMyShow Tracker will let you know.',
     features: [],
+    platforms: {Platforms.mobile},
     screenshots: [],
     repoUrl:
         'https://github.com/albinpk/flutter-apps/tree/master/001-bookmyshow_tracker#readme',
