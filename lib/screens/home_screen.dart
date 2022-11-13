@@ -23,18 +23,37 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            for (int i = 0; i < kMyName.length; i++)
-              i < projects.length
-                  ? SingleCharacter(i)
-                  : Text(
-                      kMyName[i],
-                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                            color: Colors.grey,
-                          ),
-                    ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 80),
+              child: Text(
+                'Hi, I am',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+
+            // ALBIN PK
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < kMyName.length; i++)
+                  i < projects.length
+                      ? SingleCharacter(i)
+                      : Text(
+                          kMyName[i],
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(color: Colors.grey),
+                        ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 80),
+              child: Text('a passionate, self-taught Flutter developer.'),
+            ),
           ],
         ),
       ),
