@@ -211,10 +211,38 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: FadeTransition(
         opacity: fadeInAnimation,
-        child: Text(project.title),
+        child: Row(
+          children: [
+            Text(project.title),
+            const SizedBox(width: 20),
+
+            // Supported platforms
+            Tooltip(
+              message: 'Platforms',
+              child: Chip(
+                backgroundColor: backgroundColor,
+                side: const BorderSide(color: Colors.white54),
+                label: DefaultTextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Colors.white,
+                      ),
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < project.platforms.length; i++) ...[
+                        Text(project.platforms.elementAt(i).name),
+                        if (i != project.platforms.length - 1) const Text(' | ')
+                      ]
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         // Live demo and repository button
+
         FadeTransition(
           opacity: fadeInAnimation,
           child: SlideTransition(
