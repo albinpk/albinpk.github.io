@@ -18,6 +18,7 @@ class Project {
   /// Project description.
   final String description;
 
+  /// List of project features.
   final List<Feature> features;
 
   /// List of project screenshots.
