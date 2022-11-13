@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -120,7 +121,7 @@ class _SingleCharacterState extends State<SingleCharacter> {
 }
 
 /// The widget appears as an overlay above the character.
-class _OverlayCard extends StatelessWidget {
+class _OverlayCard extends StatefulWidget {
   const _OverlayCard({
     Key? key,
     required this.projectIndex,
@@ -133,16 +134,65 @@ class _OverlayCard extends StatelessWidget {
   final Color backgroundColor;
 
   @override
+  State<_OverlayCard> createState() => _OverlayCardState();
+}
+
+class _OverlayCardState extends State<_OverlayCard>
+    with SingleTickerProviderStateMixin {
+  late final _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  );
+
+  /// The overlay reveal animation.
+  late final _clipWidthAnimation = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.ease,
+  );
+
+  /// Timer to delay the animation.
+  late final Timer _animationDelayTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Show the overlay after 500 milliseconds
+    _animationDelayTimer = Timer(
+      const Duration(milliseconds: 500),
+      _animationController.forward,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationDelayTimer.cancel();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: backgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          projects[projectIndex].title,
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Colors.white,
-              ),
+    return ClipRect(
+      child: AnimatedBuilder(
+        animation: _clipWidthAnimation,
+        builder: (context, child) {
+          return Align(
+            alignment: Alignment.centerLeft,
+            widthFactor: _clipWidthAnimation.value,
+            child: child,
+          );
+        },
+        child: ColoredBox(
+          color: widget.backgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              projects[widget.projectIndex].title,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Colors.white,
+                  ),
+            ),
+          ),
         ),
       ),
     );
