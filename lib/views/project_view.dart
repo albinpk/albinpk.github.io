@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/projects.dart';
 import '../models/project_model.dart';
+import '../widgets/supported_platforms_chip.dart';
 
 class ProjectView extends StatefulWidget {
   const ProjectView({
@@ -102,6 +103,7 @@ class _ProjectViewState extends State<ProjectView> {
       );
     }
 
+    // If screen width <= 700
     return SlideTransition(
       position: _detailsViewSlideAnimation,
       child: FadeTransition(
@@ -112,6 +114,20 @@ class _ProjectViewState extends State<ProjectView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _ProjectDescription(project: _project),
+              const SizedBox(height: 20),
+
+              // Platforms
+              Text(
+                'Platforms',
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
+              const SizedBox(height: 10),
+              SupportedPlatformsChip(platforms: _project.platforms),
+              const SizedBox(height: 20),
+
+              // Screenshots
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.8,
                 child: _ProjectScreenshots(

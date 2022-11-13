@@ -8,6 +8,7 @@ import '../constants.dart';
 import '../data/projects.dart';
 import '../models/project_model.dart';
 import '../views/project_view.dart';
+import '../widgets/supported_platforms_chip.dart';
 
 final _random = Random();
 
@@ -201,6 +202,8 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: Colors.black87,
     );
 
+    final isLargeScreen = MediaQuery.of(context).size.width > 700;
+
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: backgroundColor,
@@ -214,29 +217,17 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           children: [
             Text(project.title),
-            const SizedBox(width: 20),
 
             // Supported platforms
-            Tooltip(
-              message: 'Platforms',
-              child: Chip(
-                backgroundColor: backgroundColor,
-                side: const BorderSide(color: Colors.white54),
-                label: DefaultTextStyle(
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Colors.white,
-                      ),
-                  child: Row(
-                    children: [
-                      for (int i = 0; i < project.platforms.length; i++) ...[
-                        Text(project.platforms.elementAt(i).name),
-                        if (i != project.platforms.length - 1) const Text(' | ')
-                      ]
-                    ],
-                  ),
+            if (isLargeScreen) ...[
+              const SizedBox(width: 20),
+              Tooltip(
+                message: 'Platforms',
+                child: SupportedPlatformsChip(
+                  platforms: project.platforms,
                 ),
               ),
-            ),
+            ]
           ],
         ),
       ),
