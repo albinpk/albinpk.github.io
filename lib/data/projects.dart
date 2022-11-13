@@ -6,6 +6,7 @@ const _whatsAppImageDesktop =
     'https://albinpk.github.io/assets/assets/images/desktop';
 
 const List<Project> projects = [
+// WhatsApp
   Project(
     title: 'WhatsApp UI clone',
     description: 'WhatsApp UI clone in Flutter.',
@@ -59,11 +60,23 @@ const List<Project> projects = [
         'https://github.com/albinpk/flutter-clones/tree/master/000-whatsapp#readme',
     liveDemoUrl: 'https://albinpk.github.io/flutter-clones',
   ),
+
+  // BookMyShow
   Project(
     title: 'BookMyShow Tracker',
     description: 'When ticket sales for a particular movie or movies '
         'on bookmyshow.com begin, BookMyShow Tracker will let you know.',
-    features: [],
+    features: [
+      Feature('Add a new movie to the movie list.'),
+      Feature('Accept sharing from the official BookMyShow app.'),
+      Feature('Extract the movie title from the URL automatically.'),
+      Feature('Remove a movie from the list of movies.'),
+      Feature('Turn tracking on or off for a specific movie.'),
+      Feature('Turn off tracking for all movies.'),
+      Feature('Change tracking frequency (interval).'),
+      Feature('Display the last time it was checked.'),
+      Feature('Visit a specific movie page on the official BookMyShow app.'),
+    ],
     platforms: {Platforms.mobile},
     screenshots: [],
     repoUrl:
