@@ -4,6 +4,8 @@ const _whatsAppImageMobile =
     'https://albinpk.github.io/assets/assets/images/whatsapp/mobile';
 const _whatsAppImageDesktop =
     'https://albinpk.github.io/assets/assets/images/whatsapp/desktop';
+const _bookMyShowImages =
+    'https://albinpk.github.io/assets/assets/images/bookmyshow';
 
 const List<Project> projects = [
 // WhatsApp
@@ -78,7 +80,12 @@ const List<Project> projects = [
       Feature('Visit a specific movie page on the official BookMyShow app.'),
     ],
     platforms: {Platforms.mobile},
-    screenshots: [],
+    screenshots: [
+      '$_bookMyShowImages/bookmyshow.gif',
+      '$_bookMyShowImages/bookmyshow.png',
+      '$_bookMyShowImages/movie-form.png',
+      '$_bookMyShowImages/sidebar.png',
+    ],
     repoUrl:
         'https://github.com/albinpk/flutter-apps/tree/master/001-bookmyshow_tracker#readme',
   ),
