@@ -1,9 +1,9 @@
 import '../models/project_model.dart';
 
 const _whatsAppImageMobile =
-    'https://albinpk.github.io/assets/assets/images/mobile';
+    'https://albinpk.github.io/assets/assets/images/whatsapp/mobile';
 const _whatsAppImageDesktop =
-    'https://albinpk.github.io/assets/assets/images/desktop';
+    'https://albinpk.github.io/assets/assets/images/whatsapp/desktop';
 
 const List<Project> projects = [
 // WhatsApp
