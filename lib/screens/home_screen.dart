@@ -27,10 +27,13 @@ class HomeScreen extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 80),
+              padding: const EdgeInsets.only(bottom: 90),
               child: Text(
                 'Hi, I am',
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Colors.black45,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
 
@@ -50,9 +53,16 @@ class HomeScreen extends StatelessWidget {
                         ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 80),
-              child: Text('a passionate, self-taught Flutter developer.'),
+
+            Padding(
+              padding: const EdgeInsets.only(top: 90),
+              child: Text(
+                'a passionate, self-taught Flutter developer.',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Colors.black45,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
           ],
         ),
