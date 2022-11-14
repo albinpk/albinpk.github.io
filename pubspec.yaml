@@ -23,3 +23,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/whatsapp/mobile/
+    - assets/images/whatsapp/desktop/
+    - assets/images/bookmyshow/
+    - assets/images/todo/android/
+    - assets/images/todo/linux/
+    - assets/images/todo/web/
+    - assets/images/portfolio/
