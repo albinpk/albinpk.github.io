@@ -1,17 +1,17 @@
 import '../models/project_model.dart';
 
-const _whatsAppImageMobile =
-    'https://albinpk.github.io/assets/assets/images/whatsapp/mobile';
-const _whatsAppImageDesktop =
-    'https://albinpk.github.io/assets/assets/images/whatsapp/desktop';
-const _bookMyShowImages =
-    'https://albinpk.github.io/assets/assets/images/bookmyshow';
-const _todoImages = 'https://albinpk.github.io/assets/assets/images/todo';
+const _images = 'https://albinpk.github.io/assets/assets/images';
+
+const _whatsAppImageMobile = '$_images/whatsapp/mobile';
+const _whatsAppImageDesktop = '$_images/whatsapp/desktop';
+const _bookMyShowImages = '$_images/bookmyshow';
+const _todoImages = '$_images/todo';
+const _portfolioImages = '$_images/portfolio';
 
 const List<Project> projects = [
-// WhatsApp
+  // WhatsApp
   Project(
-    title: 'WhatsApp UI clone',
+    title: 'WhatsApp UI',
     description: 'WhatsApp UI clone in Flutter.',
     features: [
       Feature('Chats', features: [
@@ -116,5 +116,25 @@ const List<Project> projects = [
     ],
     repoUrl:
         'https://github.com/albinpk/flutter-apps/tree/master/000-todo#readme',
+  ),
+
+  // Portfolio
+  Project(
+    title: 'Portfolio',
+    description: 'Personal portfolio (this website) hosted on Github Pages',
+    features: [
+      Feature('About me'),
+      Feature('My projects', features: [
+        Feature('Project details'),
+        Feature('Project screenshots'),
+        Feature('Project repository link'),
+      ]),
+    ],
+    platforms: {Platforms.web},
+    screenshots: [
+      '$_portfolioImages/portfolio-home.png',
+      '$_portfolioImages/portfolio-project.png',
+    ],
+    repoUrl: 'https://github.com/albinpk/albinpk.github.io',
   ),
 ];
