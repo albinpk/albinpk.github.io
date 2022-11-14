@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -17,7 +16,8 @@ class SingleCharacter extends StatefulWidget {
   State<SingleCharacter> createState() => _SingleCharacterState();
 }
 
-class _SingleCharacterState extends State<SingleCharacter> {
+class _SingleCharacterState extends State<SingleCharacter>
+    with SingleTickerProviderStateMixin {
   late final _textSmall = Theme.of(context).textTheme.displaySmall!;
   late final _textLarge = Theme.of(context).textTheme.displayMedium!.copyWith(
         fontWeight: FontWeight.bold,
@@ -47,6 +47,10 @@ class _SingleCharacterState extends State<SingleCharacter> {
   /// Current color of the character.
   late Color _color;
 
+  /// A Map for storing the AnimationController of opened overlays.
+  /// On the mouse-leave event, reverse the animation instead of removing the overlay.
+  static final Map<int, AnimationController> _overlayAnimations = {};
+
   @override
   Widget build(BuildContext context) {
     final heroTag = _random.nextDouble();
@@ -66,7 +70,7 @@ class _SingleCharacterState extends State<SingleCharacter> {
           _showOverlay();
         },
         onExit: (_) {
-          _currentOverlay.remove();
+          _overlayAnimations[widget.index]!.reverse();
           setState(() => _isHover = false);
         },
         child: GestureDetector(
@@ -97,35 +101,90 @@ class _SingleCharacterState extends State<SingleCharacter> {
   }
 
   late final _overlayState = Overlay.of(context)!;
-  late OverlayEntry _currentOverlay;
+
+  @override
+  void dispose() {
+    _overlayState.dispose();
+    _overlayPositionNotifier.dispose();
+    _overlayColorNotifier.dispose();
+    for (final c in _overlayAnimations.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  /// Overlay position notifier.
+  ///
+  /// This will help update the position of existing
+  /// overlays after the browser window resizes.
+  final _overlayPositionNotifier = ValueNotifier<Offset>(Offset.zero);
+
+  /// Overlay color notifier.
+  ///
+  /// This will help update the color of
+  /// existing overlays on every mouse-enter event.
+  final _overlayColorNotifier = ValueNotifier<Color>(Colors.red);
 
   /// Show overlay above the character.
   void _showOverlay() {
-    // Find global position of the character
+    // Updating the character position and color.
     final box = context.findRenderObject() as RenderBox;
-    final position = box.localToGlobal(Offset.zero);
+    _overlayPositionNotifier.value = box.localToGlobal(Offset.zero);
+    _overlayColorNotifier.value = _color;
 
-    _currentOverlay = OverlayEntry(
-      // Place overlay above the character
-      builder: (context) => Positioned(
-        left: position.dx,
-        bottom: position.dy + 10,
-        child: _OverlayCard(
-          projectIndex: widget.index,
-          backgroundColor: _color,
+    // If the character overlay exists, then forward its animation.
+    if (_overlayAnimations.containsKey(widget.index)) {
+      _overlayAnimations[widget.index]!.forward();
+      return;
+    }
+
+    // If the character overlay does not exist, then create the overlay.
+    // Create an animation controller for the overlay and add it to the Map.
+    final controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+      reverseDuration: const Duration(milliseconds: 300),
+    );
+    _overlayAnimations[widget.index] = controller;
+
+    _overlayState.insert(
+      OverlayEntry(
+        // The positionListener is at the top because the position
+        // of the overlay does not change frequently, but the
+        // color does when every mouse enter event occurs.
+        builder: (context) => ValueListenableBuilder<Offset>(
+          valueListenable: _overlayPositionNotifier,
+          builder: (context, offset, child) {
+            return Positioned(
+              left: offset.dx,
+              bottom: offset.dy + 10,
+              child: child!,
+            );
+          },
+          child: ValueListenableBuilder<Color>(
+            valueListenable: _overlayColorNotifier,
+            builder: (context, color, _) {
+              return _OverlayCard(
+                projectIndex: widget.index,
+                backgroundColor: color,
+                animationController: controller,
+              );
+            },
+          ),
         ),
       ),
     );
-    _overlayState.insert(_currentOverlay);
+    controller.forward(); // Start the reveal animation
   }
 }
 
 /// The widget appears as an overlay above the character.
-class _OverlayCard extends StatefulWidget {
-  const _OverlayCard({
+class _OverlayCard extends StatelessWidget {
+  _OverlayCard({
     Key? key,
     required this.projectIndex,
     required this.backgroundColor,
+    required this.animationController,
   }) : super(key: key);
 
   final int projectIndex;
@@ -133,64 +192,46 @@ class _OverlayCard extends StatefulWidget {
   /// Background color of the overlay card.
   final Color backgroundColor;
 
-  @override
-  State<_OverlayCard> createState() => _OverlayCardState();
-}
-
-class _OverlayCardState extends State<_OverlayCard>
-    with SingleTickerProviderStateMixin {
-  late final _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 1),
-  );
+  /// Overlay reveal animation controller.
+  final AnimationController animationController;
 
   /// The overlay reveal animation.
+  /// Using an interval curve to delay the animation start
   late final _clipWidthAnimation = CurvedAnimation(
-    parent: _animationController,
-    curve: Curves.ease,
+    parent: animationController,
+    curve: const Interval(0.4, 1, curve: Curves.ease),
   );
 
-  /// Timer to delay the animation.
-  late final Timer _animationDelayTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    // Show the overlay after 500 milliseconds
-    _animationDelayTimer = Timer(
-      const Duration(milliseconds: 500),
-      _animationController.forward,
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationDelayTimer.cancel();
-    _animationController.dispose();
-    super.dispose();
-  }
+  /// Overlay fade animation.
+  late final CurvedAnimation _fadeAnimation = CurvedAnimation(
+    parent: animationController,
+    curve: const Interval(0.4, 0.8, curve: Curves.ease),
+  );
 
   @override
   Widget build(BuildContext context) {
     return ClipRect(
-      child: AnimatedBuilder(
-        animation: _clipWidthAnimation,
-        builder: (context, child) {
-          return Align(
-            alignment: Alignment.centerLeft,
-            widthFactor: _clipWidthAnimation.value,
-            child: child,
-          );
-        },
-        child: ColoredBox(
-          color: widget.backgroundColor,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              projects[widget.projectIndex].title,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: Colors.white,
-                  ),
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: AnimatedBuilder(
+          animation: _clipWidthAnimation,
+          builder: (context, child) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              widthFactor: _clipWidthAnimation.value,
+              child: child,
+            );
+          },
+          child: ColoredBox(
+            color: backgroundColor,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                projects[projectIndex].title,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
             ),
           ),
         ),
