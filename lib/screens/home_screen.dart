@@ -175,7 +175,6 @@ class _ContactCardState extends State<_ContactCard> {
                 SvgPicture.asset(
                   widget.assetIcon,
                   height: 20,
-                  color: Colors.white,
                 ),
 
                 if (isLargeScreen) ...[
