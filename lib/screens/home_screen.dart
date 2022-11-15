@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -136,6 +137,9 @@ class _ContactCard extends StatefulWidget {
 class _ContactCardState extends State<_ContactCard> {
   bool _isHover = false;
 
+  late final String _clipBoardText =
+      widget.url.startsWith('mailto:') ? widget.value : widget.url;
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -154,6 +158,9 @@ class _ContactCardState extends State<_ContactCard> {
             duration: const Duration(milliseconds: 200),
             curve: Curves.ease,
             alignment: Alignment.center,
+            // This padding is used to centre the content of
+            // the row without the icon button at the end.
+            padding: const EdgeInsets.only(left: 30),
             decoration: BoxDecoration(
               color: widget.color,
               borderRadius: BorderRadius.vertical(
@@ -163,17 +170,41 @@ class _ContactCardState extends State<_ContactCard> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                /// Profile icon; LinkedIn, GitHub, Email...
                 SvgPicture.asset(
                   widget.assetIcon,
                   height: 20,
                   color: Colors.white,
                 ),
                 const SizedBox(width: 10),
-                Text(
-                  widget.value,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: Colors.white,
-                      ),
+
+                // Profile handle|username|id
+                Flexible(
+                  child: Text(
+                    widget.value,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
+                ),
+
+                // Copy to clipboard button
+                AnimatedOpacity(
+                  opacity: _isHover ? 1 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.ease,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(Icons.copy),
+                    color: Colors.white54,
+                    iconSize: 18,
+                    tooltip: 'Copy: $_clipBoardText',
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: _clipBoardText),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
