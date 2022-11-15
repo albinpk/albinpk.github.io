@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
 import '../data/projects.dart';
@@ -69,21 +73,30 @@ class HomeScreen extends StatelessWidget {
             Align(
               alignment: Alignment.bottomCenter,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: const [
+                  // LinkedIn
                   _ContactCard(
-                    title: 'LinkedIn',
-                    color: Colors.blue,
-                    url: '',
+                    value: '@albinpk',
+                    color: Color(0xFF0F5996),
+                    assetIcon: 'assets/icons/linkedin.svg',
+                    url: 'https://www.linkedin.com/in/albinpk',
                   ),
+
+                  // GitHub
                   _ContactCard(
-                    title: 'GitHub',
-                    color: Colors.black,
-                    url: '',
+                    value: '@albinpk',
+                    color: Color(0xFF1B1A1A),
+                    assetIcon: 'assets/icons/github.svg',
+                    url: 'https://github.com/albinpk',
                   ),
+
+                  // Email
                   _ContactCard(
-                    title: 'Email',
-                    color: Colors.redAccent,
-                    url: '',
+                    value: 'abnpkdev@gmail.com',
+                    color: Colors.red,
+                    assetIcon: 'assets/icons/envelope-solid.svg',
+                    url: 'mailto:abnpkdev@gmail.com',
                   ),
                 ],
               ),
@@ -95,31 +108,74 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _ContactCard extends StatelessWidget {
+class _ContactCard extends StatefulWidget {
   const _ContactCard({
     Key? key,
-    required this.title,
+    required this.value,
     required this.url,
+    required this.assetIcon,
     required this.color,
   }) : super(key: key);
 
-  final String title;
+  /// Username or user id.
+  final String value;
+
+  /// Profile url.
   final String url;
+
+  /// Profile icon path.
+  final String assetIcon;
+
+  /// Background color.
   final Color color;
+
+  @override
+  State<_ContactCard> createState() => _ContactCardState();
+}
+
+class _ContactCardState extends State<_ContactCard> {
+  bool _isHover = false;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: SizedBox(
-        height: 30,
-        child: ColoredBox(
-          color: color,
-          child: Center(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.white,
-                  ),
+      child: MouseRegion(
+        onEnter: (event) => setState(() => _isHover = true),
+        onExit: (event) => setState(() => _isHover = false),
+        cursor: MaterialStateMouseCursor.clickable,
+        child: GestureDetector(
+          onTap: () async {
+            if (!await launchUrlString(widget.url)) {
+              log('Error launching url: ${widget.url}');
+            }
+          },
+          child: AnimatedContainer(
+            height: _isHover ? 80 : 40,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.ease,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: widget.color,
+              borderRadius: BorderRadius.vertical(
+                top: _isHover ? const Radius.circular(10) : Radius.zero,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  widget.assetIcon,
+                  height: 20,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  widget.value,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Colors.white,
+                      ),
+                ),
+              ],
             ),
           ),
         ),
