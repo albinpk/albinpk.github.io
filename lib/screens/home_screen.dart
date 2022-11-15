@@ -142,6 +142,7 @@ class _ContactCardState extends State<_ContactCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeScreen = MediaQuery.of(context).size.width > 700;
     return Expanded(
       child: MouseRegion(
         onEnter: (event) => setState(() => _isHover = true),
@@ -160,7 +161,7 @@ class _ContactCardState extends State<_ContactCard> {
             alignment: Alignment.center,
             // This padding is used to centre the content of
             // the row without the icon button at the end.
-            padding: const EdgeInsets.only(left: 30),
+            padding: isLargeScreen ? const EdgeInsets.only(left: 30) : null,
             decoration: BoxDecoration(
               color: widget.color,
               borderRadius: BorderRadius.vertical(
@@ -176,36 +177,39 @@ class _ContactCardState extends State<_ContactCard> {
                   height: 20,
                   color: Colors.white,
                 ),
-                const SizedBox(width: 10),
 
-                // Profile handle|username|id
-                Flexible(
-                  child: Text(
-                    widget.value,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
+                if (isLargeScreen) ...[
+                  const SizedBox(width: 10),
 
-                // Copy to clipboard button
-                AnimatedOpacity(
-                  opacity: _isHover ? 1 : 0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.ease,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.copy),
-                    color: Colors.white54,
-                    iconSize: 18,
-                    tooltip: 'Copy: $_clipBoardText',
-                    onPressed: () {
-                      Clipboard.setData(
-                        ClipboardData(text: _clipBoardText),
-                      );
-                    },
+                  // Profile handle|username|id
+                  Flexible(
+                    child: Text(
+                      widget.value,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
                   ),
-                ),
+
+                  // Copy to clipboard button
+                  AnimatedOpacity(
+                    opacity: _isHover ? 1 : 0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(Icons.copy),
+                      color: Colors.white54,
+                      iconSize: 18,
+                      tooltip: 'Copy: $_clipBoardText',
+                      onPressed: () {
+                        Clipboard.setData(
+                          ClipboardData(text: _clipBoardText),
+                        );
+                      },
+                    ),
+                  ),
+                ]
               ],
             ),
           ),
