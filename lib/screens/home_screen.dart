@@ -64,7 +64,64 @@ class HomeScreen extends StatelessWidget {
                     ),
               ),
             ),
+
+            // Online profiles
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                children: const [
+                  _ContactCard(
+                    title: 'LinkedIn',
+                    color: Colors.blue,
+                    url: '',
+                  ),
+                  _ContactCard(
+                    title: 'GitHub',
+                    color: Colors.black,
+                    url: '',
+                  ),
+                  _ContactCard(
+                    title: 'Email',
+                    color: Colors.redAccent,
+                    url: '',
+                  ),
+                ],
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContactCard extends StatelessWidget {
+  const _ContactCard({
+    Key? key,
+    required this.title,
+    required this.url,
+    required this.color,
+  }) : super(key: key);
+
+  final String title;
+  final String url;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: SizedBox(
+        height: 30,
+        child: ColoredBox(
+          color: color,
+          child: Center(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Colors.white,
+                  ),
+            ),
+          ),
         ),
       ),
     );
