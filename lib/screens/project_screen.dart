@@ -77,8 +77,16 @@ class _ProjectScreenState extends State<ProjectScreen>
   void _animationStatusListener(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
       _animationController.forward();
+      // Disabling reverse Hero animation
+      setState(() {
+        _heroTagAfterAnimation = 1; // 1 is not included in Random.nextDouble()
+      });
     }
   }
+
+  /// This tag is applied to the Hero widget (in "Made by ALBIN.." text) after the
+  /// route animation has finished in order to disable the reverse Hero animation.
+  Object? _heroTagAfterAnimation;
 
   @override
   void dispose() {
@@ -139,7 +147,7 @@ class _ProjectScreenState extends State<ProjectScreen>
                           children: kMyName.characters.map((char) {
                             return Hero(
                               tag: kMyName[widget.projectIndex] == char
-                                  ? widget.heroTag
+                                  ? _heroTagAfterAnimation ?? widget.heroTag
                                   : _random.nextDouble(),
                               child: kMyName[widget.projectIndex] == char
                                   // Changing the font size and color of the

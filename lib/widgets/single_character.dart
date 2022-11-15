@@ -45,7 +45,7 @@ class _SingleCharacterState extends State<SingleCharacter>
   late final String _char = kMyName[widget.index];
 
   /// Current color of the character.
-  late Color _color;
+  Color _color = Colors.blue;
 
   /// A Map for storing the AnimationController of opened overlays.
   /// On the mouse-leave event, reverse the animation instead of removing the overlay.
