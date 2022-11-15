@@ -83,8 +83,8 @@ const List<Project> projects = [
     platforms: {Platforms.mobile},
     screenshots: [
       '$_bookMyShowImages/bookmyshow.gif',
-      '$_bookMyShowImages/bookmyshow.png',
       '$_bookMyShowImages/movie-form.png',
+      '$_bookMyShowImages/bookmyshow.gif.png',
       '$_bookMyShowImages/sidebar.png',
     ],
     repoUrl:
@@ -106,8 +106,8 @@ const List<Project> projects = [
     platforms: {Platforms.mobile, Platforms.desktop, Platforms.web},
     screenshots: [
       '$_todoImages/android/todo-home-page.gif',
-      '$_todoImages/android/todo-home-page.png',
       '$_todoImages/android/todo-form.png',
+      '$_todoImages/android/todo-home-page.gif.png',
       '$_todoImages/android/todo-dark-mode.png',
       '$_todoImages/android/todo-swipe.png',
       '$_todoImages/linux/todo-home.png',
