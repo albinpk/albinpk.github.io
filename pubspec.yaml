@@ -26,6 +26,9 @@ flutter:
   uses-material-design: true
 
   assets:
+    # Icons
+    - assets/icons/
+    # Screenshots
     - assets/images/whatsapp/mobile/
     - assets/images/whatsapp/desktop/
     - assets/images/bookmyshow/
