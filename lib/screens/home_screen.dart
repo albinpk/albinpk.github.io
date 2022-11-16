@@ -9,8 +9,81 @@ import '../constants.dart';
 import '../data/projects.dart';
 import '../widgets/single_character.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late final _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 6),
+  )..forward();
+
+  /// Fade animation for "Hi, I am" Text.
+  late final Animation<double> _hiTextFadeAnimation = Tween<double>(
+    begin: 0,
+    end: 1,
+  ).animate(
+    CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.1, 0.2, curve: Curves.ease),
+    ),
+  );
+
+  /// Scale animation for "Hi, I am" Text.
+  late final Animation<double> _hiTextScaleAnimation = Tween<double>(
+    begin: 2,
+    end: 1,
+  ).animate(
+    CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.35, 0.4, curve: Curves.ease),
+    ),
+  );
+
+  /// Fade animation for NAME text.
+  late final Animation<double> _nameTextFadeAnimation = Tween<double>(
+    begin: 0,
+    end: 1,
+  ).animate(
+    CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.35, 0.45, curve: Curves.ease),
+    ),
+  );
+
+  /// Fade animation for description text.
+  late final Animation<double> _descriptionTextFadeAnimation = Tween<double>(
+    begin: 0,
+    end: 1,
+  ).animate(
+    CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.6, 0.65, curve: Curves.ease),
+    ),
+  );
+
+  /// List of slide animations for contact cards.
+  late final Iterable<Animation<Offset>> _contactCardSlideAnimations = const [
+    Interval(0.900, 0.950, curve: Curves.ease),
+    Interval(0.925, 0.975, curve: Curves.ease),
+    Interval(0.950, 1.000, curve: Curves.ease),
+  ].map((interval) => Tween<Offset>(
+        begin: const Offset(0, 1),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(parent: _animationController, curve: interval),
+      ));
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,40 +106,52 @@ class HomeScreen extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 90),
-              child: Text(
-                'Hi, I am',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Colors.black45,
-                      fontWeight: FontWeight.bold,
-                    ),
+              child: FadeTransition(
+                opacity: _hiTextFadeAnimation,
+                child: ScaleTransition(
+                  scale: _hiTextScaleAnimation,
+                  child: Text(
+                    'Hi, I am',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Colors.black45,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
               ),
             ),
 
             // ALBIN PK
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (int i = 0; i < kMyName.length; i++)
-                  i < projects.length
-                      ? SingleCharacter(i)
-                      : Text(
-                          kMyName[i],
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(color: Colors.grey),
-                        ),
-              ],
+            FadeTransition(
+              opacity: _nameTextFadeAnimation,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (int i = 0; i < kMyName.length; i++)
+                    i < projects.length
+                        ? SingleCharacter(i)
+                        : Text(
+                            kMyName[i],
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(color: Colors.grey),
+                          ),
+                ],
+              ),
             ),
 
-            Padding(
-              padding: const EdgeInsets.only(top: 90),
-              child: Text(
-                'a passionate, self-taught Flutter developer.',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Colors.black45,
-                      fontWeight: FontWeight.bold,
-                    ),
+            FadeTransition(
+              opacity: _descriptionTextFadeAnimation,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 90),
+                child: Text(
+                  'a passionate, self-taught Flutter developer.',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Colors.black45,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
               ),
             ),
 
@@ -99,7 +184,17 @@ class HomeScreen extends StatelessWidget {
                     assetIcon: 'assets/icons/envelope-solid.svg',
                     url: 'mailto:abnpkdev@gmail.com',
                   ),
-                ],
+                ]
+                    .asMap() // Wrap all cards with slide animation
+                    .entries
+                    .map((e) => Expanded(
+                          child: SlideTransition(
+                            position:
+                                _contactCardSlideAnimations.elementAt(e.key),
+                            child: e.value,
+                          ),
+                        ))
+                    .toList(),
               ),
             ),
           ],
@@ -143,74 +238,72 @@ class _ContactCardState extends State<_ContactCard> {
   @override
   Widget build(BuildContext context) {
     final isLargeScreen = MediaQuery.of(context).size.width > 700;
-    return Expanded(
-      child: MouseRegion(
-        onEnter: (event) => setState(() => _isHover = true),
-        onExit: (event) => setState(() => _isHover = false),
-        cursor: MaterialStateMouseCursor.clickable,
-        child: GestureDetector(
-          onTap: () async {
-            if (!await launchUrlString(widget.url)) {
-              log('Error launching url: ${widget.url}');
-            }
-          },
-          child: AnimatedContainer(
-            height: _isHover ? 80 : 40,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.ease,
-            alignment: Alignment.center,
-            // This padding is used to centre the content of
-            // the row without the icon button at the end.
-            padding: isLargeScreen ? const EdgeInsets.only(left: 30) : null,
-            decoration: BoxDecoration(
-              color: widget.color,
-              borderRadius: BorderRadius.vertical(
-                top: _isHover ? const Radius.circular(10) : Radius.zero,
-              ),
+    return MouseRegion(
+      onEnter: (event) => setState(() => _isHover = true),
+      onExit: (event) => setState(() => _isHover = false),
+      cursor: MaterialStateMouseCursor.clickable,
+      child: GestureDetector(
+        onTap: () async {
+          if (!await launchUrlString(widget.url)) {
+            log('Error launching url: ${widget.url}');
+          }
+        },
+        child: AnimatedContainer(
+          height: _isHover ? 80 : 40,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.ease,
+          alignment: Alignment.center,
+          // This padding is used to centre the content of
+          // the row without the icon button at the end.
+          padding: isLargeScreen ? const EdgeInsets.only(left: 30) : null,
+          decoration: BoxDecoration(
+            color: widget.color,
+            borderRadius: BorderRadius.vertical(
+              top: _isHover ? const Radius.circular(10) : Radius.zero,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                /// Profile icon; LinkedIn, GitHub, Email...
-                SvgPicture.asset(
-                  widget.assetIcon,
-                  height: 20,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// Profile icon; LinkedIn, GitHub, Email...
+              SvgPicture.asset(
+                widget.assetIcon,
+                height: 20,
+              ),
+
+              if (isLargeScreen) ...[
+                const SizedBox(width: 10),
+
+                // Profile handle|username|id
+                Flexible(
+                  child: Text(
+                    widget.value,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
 
-                if (isLargeScreen) ...[
-                  const SizedBox(width: 10),
-
-                  // Profile handle|username|id
-                  Flexible(
-                    child: Text(
-                      widget.value,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Colors.white,
-                          ),
-                    ),
+                // Copy to clipboard button
+                AnimatedOpacity(
+                  opacity: _isHover ? 1 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.ease,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(Icons.copy),
+                    color: Colors.white54,
+                    iconSize: 18,
+                    tooltip: 'Copy: $_clipBoardText',
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: _clipBoardText),
+                      );
+                    },
                   ),
-
-                  // Copy to clipboard button
-                  AnimatedOpacity(
-                    opacity: _isHover ? 1 : 0,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.ease,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.copy),
-                      color: Colors.white54,
-                      iconSize: 18,
-                      tooltip: 'Copy: $_clipBoardText',
-                      onPressed: () {
-                        Clipboard.setData(
-                          ClipboardData(text: _clipBoardText),
-                        );
-                      },
-                    ),
-                  ),
-                ]
-              ],
-            ),
+                ),
+              ]
+            ],
           ),
         ),
       ),
