@@ -157,7 +157,7 @@ class _SingleCharacterState extends State<SingleCharacter>
           builder: (context, offset, child) {
             return Positioned(
               left: offset.dx,
-              bottom: offset.dy + 10,
+              bottom: offset.dy + 70,
               child: child!,
             );
           },

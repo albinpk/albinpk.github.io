@@ -88,22 +88,23 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // TODO: Remove this
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "This webpage is under development.",
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Colors.redAccent,
-              ),
-        ),
-      ),
       body: Center(
         child: Stack(
           alignment: Alignment.center,
           children: [
+            // TODO: Remove this
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  "This webpage is under development.",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Colors.redAccent,
+                      ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(bottom: 90),
               child: FadeTransition(
