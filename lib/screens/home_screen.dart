@@ -152,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen>
                         color: Colors.black45,
                         fontWeight: FontWeight.bold,
                       ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
