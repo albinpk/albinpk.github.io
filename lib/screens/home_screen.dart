@@ -10,7 +10,13 @@ import '../data/projects.dart';
 import '../widgets/single_character.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    required this.onThemeModeChange,
+  });
+
+  /// Theme change callback.
+  final ValueSetter<ThemeMode> onThemeModeChange;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -56,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen>
     ),
   );
 
-  /// Fade animation for description text.
+  /// Fade animation for the description text.
   late final Animation<double> _descriptionTextFadeAnimation = Tween<double>(
     begin: 0,
     end: 1,
@@ -87,6 +93,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       body: Center(
         child: Stack(
@@ -99,12 +107,28 @@ class _HomeScreenState extends State<HomeScreen>
                 padding: const EdgeInsets.only(top: 10),
                 child: Text(
                   "This webpage is under development.",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Colors.redAccent,
-                      ),
+                  style: textTheme.bodyMedium!.copyWith(
+                    color: Colors.redAccent,
+                  ),
                 ),
               ),
             ),
+
+            // Theme button
+            Positioned(
+              top: 20,
+              right: 20,
+              child: IconButton(
+                onPressed: () => widget.onThemeModeChange(
+                  _isLightTheme ? ThemeMode.dark : ThemeMode.light,
+                ),
+                icon: _isLightTheme
+                    ? const Icon(Icons.dark_mode)
+                    : const Icon(Icons.light_mode),
+              ),
+            ),
+
+            // "Hi, I am"
             Padding(
               padding: const EdgeInsets.only(bottom: 90),
               child: FadeTransition(
@@ -113,10 +137,9 @@ class _HomeScreenState extends State<HomeScreen>
                   scale: _hiTextScaleAnimation,
                   child: Text(
                     'Hi, I am',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Colors.black45,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -133,25 +156,24 @@ class _HomeScreenState extends State<HomeScreen>
                         ? SingleCharacter(i)
                         : Text(
                             kMyName[i],
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall!
-                                .copyWith(color: Colors.grey),
+                            style: textTheme.displaySmall!.copyWith(
+                              color: Colors.grey,
+                            ),
                           ),
                 ],
               ),
             ),
 
+            // Description
             FadeTransition(
               opacity: _descriptionTextFadeAnimation,
               child: Padding(
                 padding: const EdgeInsets.only(top: 90),
                 child: Text(
                   'a passionate, self-taught Flutter developer.',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: Colors.black45,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -204,6 +226,8 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
+
+  bool get _isLightTheme => Theme.of(context).brightness == Brightness.light;
 }
 
 class _ContactCard extends StatefulWidget {

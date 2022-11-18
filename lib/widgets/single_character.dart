@@ -18,11 +18,6 @@ class SingleCharacter extends StatefulWidget {
 
 class _SingleCharacterState extends State<SingleCharacter>
     with SingleTickerProviderStateMixin {
-  late final _textSmall = Theme.of(context).textTheme.displaySmall!;
-  late final _textLarge = Theme.of(context).textTheme.displayMedium!.copyWith(
-        fontWeight: FontWeight.bold,
-      );
-
   bool _isHover = false;
 
   /// To generate random color on hover.
@@ -54,10 +49,16 @@ class _SingleCharacterState extends State<SingleCharacter>
   @override
   Widget build(BuildContext context) {
     final heroTag = _random.nextDouble();
+    final textTheme = Theme.of(context).textTheme;
 
     // To change textStyle on hover
     return AnimatedDefaultTextStyle(
-      style: _isHover ? _textLarge.copyWith(color: _color) : _textSmall,
+      style: _isHover
+          ? textTheme.displayMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: _color,
+            )
+          : textTheme.displaySmall!,
       duration: const Duration(milliseconds: 200),
       curve: Curves.ease,
       child: MouseRegion(
