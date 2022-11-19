@@ -123,11 +123,13 @@ const List<Project> projects = [
     title: 'Portfolio',
     description: 'Personal portfolio (this website) hosted on Github Pages',
     features: [
-      Feature('About me'),
-      Feature('My projects', features: [
-        Feature('Project details'),
-        Feature('Project screenshots'),
+      Feature('Animated home screen'),
+      Feature('Ripple effect for theme mode change'),
+      Feature('Link to other online profiles (with url copy button)'),
+      Feature('Project details screen', features: [
+        Feature('Project features'),
         Feature('Project repository link'),
+        Feature('Project live demo link (if available)'),
       ]),
     ],
     platforms: {Platforms.web},
