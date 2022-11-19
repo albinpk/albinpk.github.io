@@ -206,6 +206,7 @@ class _OverlayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return ClipRect(
       child: FadeTransition(
         opacity: _fadeAnimation,
@@ -222,11 +223,22 @@ class _OverlayCard extends StatelessWidget {
             color: backgroundColor,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                projects[projectIndex].title,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Project',
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  Text(
+                    projects[projectIndex].title,
+                    style: textTheme.titleLarge!.copyWith(
                       color: Colors.white,
                     ),
+                  ),
+                ],
               ),
             ),
           ),
