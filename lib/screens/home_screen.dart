@@ -261,7 +261,7 @@ class _ContactCard extends StatefulWidget {
   /// Profile icon path.
   final String assetIcon;
 
-  /// Background color.
+  /// Background color. Only used in light mode
   final Color color;
 
   @override
@@ -277,6 +277,8 @@ class _ContactCardState extends State<_ContactCard> {
   @override
   Widget build(BuildContext context) {
     final isLargeScreen = MediaQuery.of(context).size.width > 700;
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
+
     return MouseRegion(
       onEnter: (event) => setState(() => _isHover = true),
       onExit: (event) => setState(() => _isHover = false),
@@ -296,7 +298,7 @@ class _ContactCardState extends State<_ContactCard> {
           // the row without the icon button at the end.
           padding: isLargeScreen ? const EdgeInsets.only(left: 30) : null,
           decoration: BoxDecoration(
-            color: widget.color,
+            color: isLightMode ? widget.color : const Color(0xFF2F3135),
             borderRadius: BorderRadius.vertical(
               top: _isHover ? const Radius.circular(10) : Radius.zero,
             ),
