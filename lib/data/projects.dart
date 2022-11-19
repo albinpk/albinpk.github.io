@@ -132,7 +132,10 @@ const List<Project> projects = [
     ],
     platforms: {Platforms.web},
     screenshots: [
-      '$_portfolioImages/portfolio-home.png',
+      '$_portfolioImages/portfolio-theme-ripple.png',
+      '$_portfolioImages/portfolio-home-light.png',
+      '$_portfolioImages/portfolio-home-dark.png',
+      '$_portfolioImages/portfolio-home-hover.png',
       '$_portfolioImages/portfolio-project.png',
     ],
     repoUrl: 'https://github.com/albinpk/albinpk.github.io',
