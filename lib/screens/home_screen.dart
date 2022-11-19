@@ -73,6 +73,16 @@ class _HomeScreenState extends State<HomeScreen>
     ),
   );
 
+  late final Animation<Offset> _themeButtonSlideAnimation = Tween<Offset>(
+    begin: const Offset(0, -2),
+    end: Offset.zero,
+  ).animate(
+    CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.9, 1, curve: Curves.ease),
+    ),
+  );
+
   /// List of slide animations for contact cards.
   late final Iterable<Animation<Offset>> _contactCardSlideAnimations = const [
     Interval(0.900, 0.950, curve: Curves.ease),
@@ -118,13 +128,16 @@ class _HomeScreenState extends State<HomeScreen>
             Positioned(
               top: 20,
               right: 20,
-              child: IconButton(
-                onPressed: () => widget.onThemeModeChange(
-                  _isLightTheme ? ThemeMode.dark : ThemeMode.light,
+              child: SlideTransition(
+                position: _themeButtonSlideAnimation,
+                child: IconButton(
+                  onPressed: () => widget.onThemeModeChange(
+                    _isLightTheme ? ThemeMode.dark : ThemeMode.light,
+                  ),
+                  icon: _isLightTheme
+                      ? const Icon(Icons.dark_mode)
+                      : const Icon(Icons.light_mode),
                 ),
-                icon: _isLightTheme
-                    ? const Icon(Icons.dark_mode)
-                    : const Icon(Icons.light_mode),
               ),
             ),
 
