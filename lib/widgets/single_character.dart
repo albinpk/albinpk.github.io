@@ -42,9 +42,11 @@ class _SingleCharacterState extends State<SingleCharacter>
   /// Current color of the character.
   Color _color = Colors.blue;
 
-  /// A Map for storing the AnimationController of opened overlays.
-  /// On the mouse-leave event, reverse the animation instead of removing the overlay.
-  static final Map<int, AnimationController> _overlayAnimations = {};
+  /// A Map for storing the [_OverlayController] of opened overlays.
+  ///
+  /// On the mouse-leave event, reverse the [_OverlayController.animationController]
+  /// instead of removing the overlay.
+  static final Map<int, _OverlayController> _overlayControllers = {};
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +73,7 @@ class _SingleCharacterState extends State<SingleCharacter>
           _showOverlay();
         },
         onExit: (_) {
-          _overlayAnimations[widget.index]!.reverse();
+          _overlayControllers[widget.index]!.animationController.reverse();
           setState(() => _isHover = false);
         },
         child: GestureDetector(
@@ -106,47 +108,40 @@ class _SingleCharacterState extends State<SingleCharacter>
   @override
   void dispose() {
     _overlayState.dispose();
-    _overlayPositionNotifier.dispose();
-    _overlayColorNotifier.dispose();
-    for (final c in _overlayAnimations.values) {
+    for (final c in _overlayControllers.values) {
       c.dispose();
     }
     super.dispose();
   }
 
-  /// Overlay position notifier.
-  ///
-  /// This will help update the position of existing
-  /// overlays after the browser window resizes.
-  final _overlayPositionNotifier = ValueNotifier<Offset>(Offset.zero);
-
-  /// Overlay color notifier.
-  ///
-  /// This will help update the color of
-  /// existing overlays on every mouse-enter event.
-  final _overlayColorNotifier = ValueNotifier<Color>(Colors.red);
-
   /// Show overlay above the character.
   void _showOverlay() {
-    // Updating the character position and color.
     final box = context.findRenderObject() as RenderBox;
-    _overlayPositionNotifier.value = box.localToGlobal(Offset.zero);
-    _overlayColorNotifier.value = _color;
-
-    // If the character overlay exists, then forward its animation.
-    if (_overlayAnimations.containsKey(widget.index)) {
-      _overlayAnimations[widget.index]!.forward();
+    final position = box.localToGlobal(Offset.zero);
+    // If the character overlay exists, then update its
+    // position and color, and forward its animation.
+    if (_overlayControllers.containsKey(widget.index)) {
+      final overlayController = _overlayControllers[widget.index]!;
+      overlayController.positionNotifier.value = position;
+      overlayController.colorNotifier.value = _color;
+      overlayController.animationController.forward();
       return;
     }
 
     // If the character overlay does not exist, then create the overlay.
     // Create an animation controller for the overlay and add it to the Map.
+    final positionNotifier = ValueNotifier<Offset>(position);
+    final colorNotifier = ValueNotifier<Color>(_color);
     final controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
       reverseDuration: const Duration(milliseconds: 300),
     );
-    _overlayAnimations[widget.index] = controller;
+    _overlayControllers[widget.index] = _OverlayController(
+      animationController: controller,
+      positionNotifier: positionNotifier,
+      colorNotifier: colorNotifier,
+    );
 
     _overlayState.insert(
       OverlayEntry(
@@ -154,7 +149,7 @@ class _SingleCharacterState extends State<SingleCharacter>
         // of the overlay does not change frequently, but the
         // color does when every mouse enter event occurs.
         builder: (context) => ValueListenableBuilder<Offset>(
-          valueListenable: _overlayPositionNotifier,
+          valueListenable: positionNotifier,
           builder: (context, offset, child) {
             return Positioned(
               left: offset.dx,
@@ -163,7 +158,7 @@ class _SingleCharacterState extends State<SingleCharacter>
             );
           },
           child: ValueListenableBuilder<Color>(
-            valueListenable: _overlayColorNotifier,
+            valueListenable: colorNotifier,
             builder: (context, color, _) {
               return _OverlayCard(
                 projectIndex: widget.index,
@@ -238,5 +233,38 @@ class _OverlayCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Controller for an overlay.
+///
+/// Contains [animationController], [positionNotifier] and [colorNotifier].
+class _OverlayController {
+  const _OverlayController({
+    required this.animationController,
+    required this.positionNotifier,
+    required this.colorNotifier,
+  });
+
+  /// Overlay animation controller.
+  final AnimationController animationController;
+
+  /// Overlay position notifier.
+  ///
+  /// This will help update the position of existing
+  /// overlays after the browser window resizes.
+  final ValueNotifier<Offset> positionNotifier;
+
+  /// Overlay color notifier.
+  ///
+  /// This will help update the color of
+  /// existing overlays on every mouse-enter event.
+  final ValueNotifier<Color> colorNotifier;
+
+  /// Dispose [animationController], [positionNotifier] and [colorNotifier].
+  void dispose() {
+    animationController.dispose();
+    positionNotifier.dispose();
+    colorNotifier.dispose();
   }
 }
