@@ -59,9 +59,8 @@ const List<Project> projects = [
       '$_whatsAppImageDesktop/user-profile-dark.png',
       '$_whatsAppImageDesktop/user-profile-light.png',
     ],
-    repoUrl:
-        'https://github.com/albinpk/flutter-clones/tree/master/000-whatsapp#readme',
-    liveDemoUrl: 'https://albinpk.github.io/flutter-clones',
+    repoUrl: 'https://github.com/albinpk/flutter-whatsapp-clone#readme',
+    liveDemoUrl: 'https://albinpk.github.io/flutter-whatsapp-clone',
   ),
 
   // BookMyShow
@@ -87,8 +86,7 @@ const List<Project> projects = [
       '$_bookMyShowImages/bookmyshow.gif.png',
       '$_bookMyShowImages/sidebar.png',
     ],
-    repoUrl:
-        'https://github.com/albinpk/flutter-apps/tree/master/001-bookmyshow_tracker#readme',
+    repoUrl: 'https://github.com/albinpk/bookmyshow-tracker#readme',
   ),
 
   // Todo
@@ -114,8 +112,8 @@ const List<Project> projects = [
       '$_todoImages/linux/todo-home-resize.png',
       '$_todoImages/web/todo-home.png',
     ],
-    repoUrl:
-        'https://github.com/albinpk/flutter-apps/tree/master/000-todo#readme',
+    repoUrl: 'https://github.com/albinpk/flutter-todo#readme',
+    liveDemoUrl: 'https://albinpk.github.io/flutter-todo',
   ),
 
   // Portfolio
